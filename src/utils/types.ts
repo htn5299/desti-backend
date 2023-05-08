@@ -8,6 +8,10 @@ export type FindUserParams = Partial<{
   id: number
   email: string
 }>
+export type FindPlace = Partial<{
+  id: number
+  createdId: number
+}>
 
 export type FindUserOptions = Partial<{
   selectAll: boolean

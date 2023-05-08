@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Inject, UseGuards, HttpStatus } from '@nestjs/common'
 import { Routes, Services } from '../../utils/constranst'
 import { IUserService } from '../interfaces/user'
-import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard'
+import { JwtAuthGuard } from '../../auth/guard/jwt.guard'
 import { MyHttpException } from '../../utils/myHttpException'
 @Controller(Routes.USERS)
 export class UsersController {

@@ -3,7 +3,7 @@ import { Routes, Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'
 import { FriendDto } from './dto/Friend.dto'
 import { IFriendService } from './interface/friend'
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard'
+import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
 @Controller(Routes.FRIEND)

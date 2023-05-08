@@ -6,9 +6,12 @@ import configuration from './utils/config/configuration'
 import { entities } from './utils/typeorm'
 import { AuthModule } from './auth/auth.module'
 import { FriendModule } from './friend/friend.module'
-import { PlacesModule } from './places/places.module';
+import { PlacesModule } from './places/places.module'
+import { EventsModule } from './events/events.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [configuration],
@@ -28,7 +31,8 @@ import { PlacesModule } from './places/places.module';
     UsersModule,
     AuthModule,
     FriendModule,
-    PlacesModule
+    PlacesModule,
+    EventsModule
   ],
   controllers: [],
   providers: []

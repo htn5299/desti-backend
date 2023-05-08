@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -21,16 +22,16 @@ export class Place {
   @Column()
   description: string
 
-  @Column()
-  longitude: number
-
-  @Column()
+  @Column({ type: 'float' })
   latitude: number
 
-  @Column({ type: 'enum', enum: StatusCode, default: StatusCode.PENDING })
+  @Column({ type: 'float' })
+  longitude: number
+
+  @Column({ type: 'enum', enum: StatusCode, default: StatusCode.ACCEPTED })
   status: StatusCode
 
-  @OneToOne(() => User, (user) => user.placeId)
+  @ManyToOne(() => User, (user) => user.places)
   @JoinColumn()
   createdBy: User
 

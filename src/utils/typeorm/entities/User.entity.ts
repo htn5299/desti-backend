@@ -29,6 +29,6 @@ export class User {
   @OneToMany(() => Friend, (friend) => friend.receiver)
   friendRequests: Friend[]
 
-  @OneToOne(() => Place, (place) => place.createdBy)
-  placeId: number
+  @OneToMany(() => Place, (place) => place.createdBy)
+  places: Place[]
 }

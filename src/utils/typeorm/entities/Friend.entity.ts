@@ -28,7 +28,7 @@ export class Friend {
   @JoinColumn({ name: 'receiverId' })
   receiver: User
 
-  @Column({ type: 'enum', enum: StatusCode, default: StatusCode.PENDING })
+  @Column({ type: 'enum', enum: StatusCode, default: StatusCode.ACCEPTED })
   status: StatusCode
 
   @CreateDateColumn({ type: 'timestamptz' })

@@ -18,7 +18,6 @@ async function bootstrap() {
       whitelist: true
     })
   )
-  // app.use(cookieParser());
   await app.listen(port || 3000)
 }
 
