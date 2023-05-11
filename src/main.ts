@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ConfigService } from '@nestjs/config'
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, Logger } from '@nestjs/common'
 // import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -10,9 +10,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT')
-  console.log('Running on port: ', port)
-  console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}`)
-  console.log(`configService: ${configService.get<string>('NODE_ENV')}`)
+  Logger.log('Port', port)
+  Logger.log('Process env', process.env.NODE_ENV)
+  Logger.log('Config Service', configService.get<string>('NODE_ENV'))
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true

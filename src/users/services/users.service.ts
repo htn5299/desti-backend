@@ -14,7 +14,7 @@ export class UsersService implements IUserService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>
   ) {}
-  async createUser(userDetails: CreateUserDetails) {
+  async create(userDetails: CreateUserDetails) {
     const existingUser = await this.userRepository.findOneBy({
       email: userDetails.email
     })
@@ -29,7 +29,7 @@ export class UsersService implements IUserService {
     user.profile = profile
     return await this.userRepository.save(user)
   }
-  async findUser(
+  async find(
     findUserParams: Partial<{ id: number; email: string }>,
     option?: Partial<{ selectAll: boolean }>
   ): Promise<User> {
@@ -44,10 +44,10 @@ export class UsersService implements IUserService {
     }
     return user
   }
-  saveUser(user: User): Promise<User> {
+  save(user: User): Promise<User> {
     return this.userRepository.save(user)
   }
-  async searchUsers(query: string) {
+  async search(query: string) {
     const queryBuilder = this.userRepository.createQueryBuilder('user')
     // if (query.includes(' ')) {
     //   const keywords = query.split(' ').map((keyword) => `%${keyword}%`);
@@ -62,5 +62,13 @@ export class UsersService implements IUserService {
         .where(`user.name ILIKE :query`, { query: `%${query}%` })
     }
     return queryBuilder.limit(10).select(['user.name', 'user.email', 'user.id']).getMany()
+  }
+  async getById(id: number): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .leftJoinAndSelect('users.profile', 'profile')
+      .where('profile.id= :id', { id })
+      .getOne()
+    return user
   }
 }

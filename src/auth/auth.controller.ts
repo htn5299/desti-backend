@@ -19,7 +19,7 @@ export class AuthController {
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
-    return instanceToPlain(await this.userService.createUser(createUserDto))
+    return instanceToPlain(await this.userService.create(createUserDto))
   }
 
   @Post('signin')
@@ -28,7 +28,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('signout')
+  @Post('signout')
   async signout(@Body() body: RefreshTokenDto) {
     return await this.authService.signOut(body.refreshToken)
   }
@@ -39,7 +39,7 @@ export class AuthController {
     res.send(user)
   }
 
-  @Get('refresh-token')
+  @Post('refresh-token')
   async refreshToken(@Body() body: RefreshTokenDto) {
     return this.authService.refreshToken(body.refreshToken)
   }

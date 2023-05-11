@@ -34,7 +34,7 @@ export class FriendService implements IFriendService {
   }
 
   async requestFriend(userId: number, friendDto: FriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.findUser({
+    const { id: friendId } = await this.userService.find({
       id: friendDto.friendId
     })
     const queryFriend = await this.queryFriend(userId, friendId)
@@ -55,7 +55,7 @@ export class FriendService implements IFriendService {
   }
 
   async responseFriend(userId: number, updateFriendDto: UpdateFriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.findUser({
+    const { id: friendId } = await this.userService.find({
       id: updateFriendDto.friendId
     })
 
@@ -85,13 +85,13 @@ export class FriendService implements IFriendService {
     return await Promise.all(
       queryFriend.map(async (friend) => {
         const friendId = friend.requesterId === userId ? friend.receiverId : friend.requesterId
-        return await this.userService.findUser({ id: friendId })
+        return await this.userService.find({ id: friendId })
       })
     )
   }
 
   async deleteFriend(userId: number, friendDto: FriendDto): Promise<void> {
-    const { id: friendId } = await this.userService.findUser({
+    const { id: friendId } = await this.userService.find({
       id: friendDto.friendId
     })
     const queryFriend = await this.queryFriend(userId, friendId)

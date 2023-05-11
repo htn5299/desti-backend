@@ -24,7 +24,7 @@ export class AuthService implements IAuthService {
     private refreshTokenService: IRefreshTokenService
   ) {}
   async validateUser(userCredentials: ValidateUserDetails): Promise<User> {
-    const user = await this.userService.findUser(
+    const user = await this.userService.find(
       { email: userCredentials.email },
       {
         selectAll: true

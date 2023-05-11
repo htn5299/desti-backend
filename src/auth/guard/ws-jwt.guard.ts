@@ -11,7 +11,6 @@ export class WsJwtAuthGuard extends AuthGuard('jwt') {
     }
     const client: Socket = context.switchToWs().getClient()
     const { authorization } = client.handshake.headers
-    console.log(authorization)
     return true
   }
   handleRequest(err: any, user: any, info: any) {

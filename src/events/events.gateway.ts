@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { Server } from 'socket.io'
@@ -8,8 +9,7 @@ export class EventsGateway {
 
   @OnEvent('place.create')
   handlePlaceCreateEvent(payload: any) {
-    console.log('inside place create')
-
+    Logger.log('inside place.create')
     this.server.emit('onCreate', payload)
   }
 }

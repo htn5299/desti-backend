@@ -18,27 +18,29 @@ export class PlacesService implements IPlaceService {
     private readonly eventEmmiter: EventEmitter2
   ) {}
   async createPlace(userId: number, body: CreatePlaceDto): Promise<Place> {
-    const user = await this.userService.findUser({ id: userId })
+    const user = await this.userService.find({ id: userId })
     const { name, description, latitude, longitude } = body
     const newPlace = this.placeRepository.create({ name, description, latitude, longitude, createdBy: user })
     const createPlace = await this.placeRepository.save(newPlace)
-    console.log(createPlace)
-
     this.eventEmmiter.emit('place.create', createPlace)
     return createPlace
   }
 
   async getPlaces(): Promise<Place[]> {
-    const places = await this.placeRepository.find({})
+    const places = await this.placeRepository
+      .createQueryBuilder('place')
+      .leftJoinAndSelect('place.createdBy', 'user')
+      .getMany()
     return places
   }
 
   async findOnePlace(findPlace: FindPlace): Promise<Place> {
-    const createdBy = await this.userService.findUser({ id: findPlace?.createdId })
+    // const createdBy = await this.userService.findUser({ id: findPlace?.createdId })
+
     const place = await this.placeRepository.findOne({
       where: {
-        id: findPlace.id,
-        createdBy
+        id: findPlace.id
+        // createdBy
       }
     })
     if (!place) {
@@ -48,17 +50,13 @@ export class PlacesService implements IPlaceService {
   }
 
   async editPlace(findPlace: FindPlace, body: EditPlaceDto): Promise<Place> {
-    console.log(body)
-
     const place = await this.findOnePlace(findPlace)
     const updatePlace = { ...place, ...body }
-    console.log(updatePlace)
-
     return await this.placeRepository.save(updatePlace)
   }
 
   async getPlacesByUserId(userId: number): Promise<Place[]> {
-    const createdBy = await this.userService.findUser({ id: userId })
+    const createdBy = await this.userService.find({ id: userId })
     const places = await this.placeRepository.find({ where: { createdBy } })
     return places
   }
