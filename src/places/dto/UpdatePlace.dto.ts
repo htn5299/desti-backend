@@ -1,6 +1,6 @@
 import { IsLatitude, IsLongitude, IsNumber, IsOptional } from 'class-validator'
 
-export class EditPlaceDto {
+export class UpdatePlaceDto {
   @IsOptional()
   name: string
 

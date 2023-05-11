@@ -5,21 +5,21 @@ import { Repository } from 'typeorm'
 import { Services } from '../utils/constranst'
 import { IUserService } from '../users/interfaces/user'
 import { FriendDto } from './dto/Friend.dto'
-import { IFriendService } from './interface/friend'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
 import { User } from '../utils/typeorm/entities/User.entity'
 import { StatusCode } from '../utils/typeorm/entities/StatusCode'
+import { IFriendsService } from './interface/friend'
 
 @Injectable()
-export class FriendService implements IFriendService {
+export class FriendsService implements IFriendsService {
   constructor(
     @InjectRepository(Friend)
     private friendRepository: Repository<Friend>,
     @Inject(Services.USERS) private userService: IUserService
   ) {}
 
-  async queryFriend(user1: number, user2: number): Promise<Friend> {
+  async query(user1: number, user2: number): Promise<Friend> {
     return await this.friendRepository
       .createQueryBuilder('friends')
       .where('friends.requesterId = :user1 AND  friends.receiverId = :user2', {
@@ -33,14 +33,14 @@ export class FriendService implements IFriendService {
       .getOne()
   }
 
-  async requestFriend(userId: number, friendDto: FriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.find({
+  async request(userId: number, friendDto: FriendDto): Promise<Friend> {
+    const { id: friendId } = await this.userService.findOne({
       id: friendDto.friendId
     })
-    const queryFriend = await this.queryFriend(userId, friendId)
-    if (queryFriend) {
+    const query = await this.query(userId, friendId)
+    if (query) {
       return await this.friendRepository.save({
-        ...queryFriend,
+        ...query,
         requesterId: userId,
         receiverId: friendId,
         status: StatusCode.PENDING
@@ -54,28 +54,28 @@ export class FriendService implements IFriendService {
     return await this.friendRepository.save(newFriend)
   }
 
-  async responseFriend(userId: number, updateFriendDto: UpdateFriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.find({
+  async response(userId: number, updateFriendDto: UpdateFriendDto): Promise<Friend> {
+    const { id: friendId } = await this.userService.findOne({
       id: updateFriendDto.friendId
     })
 
-    const queryFriend = await this.queryFriend(userId, friendId)
-    if (queryFriend?.receiverId !== userId) {
+    const query = await this.query(userId, friendId)
+    if (query?.receiverId !== userId) {
       throw new MyHttpException(`Không có lời mời kết bạn từ người dùng ${friendId}`, HttpStatus.FORBIDDEN)
     }
-    if (queryFriend?.status === StatusCode.ACCEPTED) {
+    if (query?.status === StatusCode.ACCEPTED) {
       throw new MyHttpException('Đã được chập nhận', HttpStatus.FORBIDDEN)
-    } else if (queryFriend?.status === StatusCode.DECLINED) {
+    } else if (query?.status === StatusCode.DECLINED) {
       throw new MyHttpException('Bạn đã hủy lời mời kết bạn trước đó', HttpStatus.FORBIDDEN)
     }
     return this.friendRepository.save({
-      ...queryFriend,
+      ...query,
       status: updateFriendDto.status
     })
   }
 
-  async listFriends(userId: number): Promise<User[]> {
-    const queryFriend = await this.friendRepository
+  async list(userId: number): Promise<User[]> {
+    const query = await this.friendRepository
       .createQueryBuilder('friend')
       .where('(friend.requesterId = :userId OR friend.receiverId = :userId)', {
         userId
@@ -83,20 +83,20 @@ export class FriendService implements IFriendService {
       .andWhere('friend.status = :status', { status: StatusCode.ACCEPTED })
       .getMany()
     return await Promise.all(
-      queryFriend.map(async (friend) => {
+      query.map(async (friend) => {
         const friendId = friend.requesterId === userId ? friend.receiverId : friend.requesterId
-        return await this.userService.find({ id: friendId })
+        return await this.userService.findOne({ id: friendId })
       })
     )
   }
 
-  async deleteFriend(userId: number, friendDto: FriendDto): Promise<void> {
-    const { id: friendId } = await this.userService.find({
+  async delete(userId: number, friendDto: FriendDto): Promise<void> {
+    const { id: friendId } = await this.userService.findOne({
       id: friendDto.friendId
     })
-    const queryFriend = await this.queryFriend(userId, friendId)
-    if (queryFriend && queryFriend.status === StatusCode.ACCEPTED) {
-      await this.friendRepository.delete(queryFriend)
+    const query = await this.query(userId, friendId)
+    if (query && query.status === StatusCode.ACCEPTED) {
+      await this.friendRepository.delete(query)
     } else {
       throw new MyHttpException('Không phải bạn bè', HttpStatus.BAD_REQUEST)
     }

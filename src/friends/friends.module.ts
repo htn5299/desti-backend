@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common'
-import { FriendController } from './friend.controller'
-import { FriendService } from './friend.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { UsersModule } from '../users/users.module'
+import { FriendsController } from './friends.controller'
+import { FriendsService } from './friends.service'
 
 @Module({
   imports: [TypeOrmModule.forFeature([Friend]), UsersModule],
-  controllers: [FriendController],
+  controllers: [FriendsController],
   providers: [
     {
-      provide: Services.FRIEND,
-      useClass: FriendService
+      provide: Services.FRIENDS,
+      useClass: FriendsService
     }
   ]
 })
-export class FriendModule {}
+export class FriendsModule {}

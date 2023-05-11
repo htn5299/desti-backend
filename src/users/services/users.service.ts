@@ -2,7 +2,7 @@ import { Injectable, HttpStatus } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from '../../utils/typeorm/entities/User.entity'
-import { CreateUserDetails } from '../../utils/types'
+import { CreateUserDetails, FindUserParams } from '../../utils/types'
 import { hashPassword } from '../../utils/helpers'
 import { IUserService } from '../interfaces/user'
 import { Profile } from '../../utils/typeorm/entities/Profile.entity'
@@ -29,10 +29,7 @@ export class UsersService implements IUserService {
     user.profile = profile
     return await this.userRepository.save(user)
   }
-  async find(
-    findUserParams: Partial<{ id: number; email: string }>,
-    option?: Partial<{ selectAll: boolean }>
-  ): Promise<User> {
+  async findOne(findUserParams: FindUserParams, option?: Partial<{ selectAll: boolean }>): Promise<User> {
     const selections: (keyof User)[] = ['id', 'email', 'name']
     const selectionswithPassword: (keyof User)[] = [...selections, 'password']
     const user = await this.userRepository.findOne({
@@ -63,12 +60,21 @@ export class UsersService implements IUserService {
     }
     return queryBuilder.limit(10).select(['user.name', 'user.email', 'user.id']).getMany()
   }
-  async getById(id: number): Promise<User> {
-    const user = await this.userRepository
-      .createQueryBuilder('users')
-      .leftJoinAndSelect('users.profile', 'profile')
-      .where('profile.id= :id', { id })
-      .getOne()
+  async getUser(findUserParams: FindUserParams): Promise<User> {
+    const { id, email } = findUserParams
+
+    const queryBuilder = this.userRepository.createQueryBuilder('users').leftJoinAndSelect('users.profile', 'profile')
+
+    if (id) {
+      queryBuilder.where('users.id = :id', { id })
+    } else if (email) {
+      queryBuilder.where('users.email = :email', { email })
+    }
+
+    const user = await queryBuilder.getOne()
+    if (!user) {
+      throw new MyHttpException('User not found', HttpStatus.NOT_FOUND)
+    }
     return user
   }
 }

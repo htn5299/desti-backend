@@ -2,38 +2,38 @@ import { Body, Controller, Delete, Get, HttpStatus, Inject, Patch, Post, UseGuar
 import { Routes, Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'
 import { FriendDto } from './dto/Friend.dto'
-import { IFriendService } from './interface/friend'
+import { IFriendsService } from './interface/friend'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
-@Controller(Routes.FRIEND)
-export class FriendController {
-  constructor(@Inject(Services.FRIEND) private readonly friendService: IFriendService) {}
+@Controller(Routes.FRIENDS)
+export class FriendsController {
+  constructor(@Inject(Services.FRIENDS) private readonly friendsService: IFriendsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('request')
-  async requestFriend(@User('sub') userId: number, @Body() friendDto: FriendDto) {
+  async request(@User('sub') userId: number, @Body() friendDto: FriendDto) {
     if (isNaN(userId)) {
       throw new MyHttpException('Unauthorized', HttpStatus.BAD_REQUEST)
     }
-    return await this.friendService.requestFriend(userId, friendDto)
+    return await this.friendsService.request(userId, friendDto)
   }
   @UseGuards(JwtAuthGuard)
   @Patch('respone')
-  async responseFriend(@User('sub') userId: number, @Body() updateFriendDto: UpdateFriendDto) {
+  async response(@User('sub') userId: number, @Body() updateFriendDto: UpdateFriendDto) {
     if (isNaN(userId)) {
       throw new MyHttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
     }
-    return await this.friendService.responseFriend(userId, updateFriendDto)
+    return await this.friendsService.response(userId, updateFriendDto)
   }
   @UseGuards(JwtAuthGuard)
   @Get()
   async listFriend(@User('sub') userId: number) {
-    return await this.friendService.listFriends(userId)
+    return await this.friendsService.list(userId)
   }
   @UseGuards(JwtAuthGuard)
   @Delete('delete')
-  async deleteFriend(@User('sub') userId: number, @Body() friendDto: FriendDto) {
-    await this.friendService.deleteFriend(userId, friendDto)
+  async delete(@User('sub') userId: number, @Body() friendDto: FriendDto) {
+    await this.friendsService.delete(userId, friendDto)
   }
 }

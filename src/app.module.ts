@@ -5,10 +5,10 @@ import { UsersModule } from './users/users.module'
 import configuration from './utils/config/configuration'
 import { entities } from './utils/typeorm'
 import { AuthModule } from './auth/auth.module'
-import { FriendModule } from './friend/friend.module'
 import { PlacesModule } from './places/places.module'
 import { EventsModule } from './events/events.module'
 import { EventEmitterModule } from '@nestjs/event-emitter'
+import { FriendsModule } from './friends/friends.module'
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
@@ -30,7 +30,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
     }),
     UsersModule,
     AuthModule,
-    FriendModule,
+    FriendsModule,
     PlacesModule,
     EventsModule
   ],
