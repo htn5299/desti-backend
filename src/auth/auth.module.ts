@@ -17,7 +17,7 @@ import { RefreshTokenService } from './refreshToken.service'
       useClass: AuthService
     },
     {
-      provide: Services.REFRESHTOKEN,
+      provide: Services.REFRESH_TOKEN,
       useClass: RefreshTokenService
     },
     JwtStrategy

@@ -10,6 +10,7 @@ import { EventsModule } from './events/events.module'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { FriendsModule } from './friends/friends.module'
 import { ImageStorageModule } from './image-storage/image-storage.module'
+import { ReviewsModule } from './reviews/reviews.module';
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
@@ -34,7 +35,8 @@ import { ImageStorageModule } from './image-storage/image-storage.module'
     FriendsModule,
     PlacesModule,
     EventsModule,
-    ImageStorageModule
+    ImageStorageModule,
+    ReviewsModule
   ],
   controllers: [],
   providers: []

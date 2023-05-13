@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { StatusCode } from './StatusCode'
 import { User } from './User.entity'
+import { Review } from './Review.entity'
 
 @Entity({ name: 'places' })
 export class Place {
@@ -34,9 +36,12 @@ export class Place {
   @JoinColumn()
   createdBy: User
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @OneToMany(() => Review, (review) => review.place)
+  reviews: Review[]
+
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date
 }

@@ -4,9 +4,13 @@ import { IUserService } from '../interfaces/user'
 import { JwtAuthGuard } from '../../auth/guard/jwt.guard'
 import { MyHttpException } from '../../utils/myHttpException'
 import { User } from '../utils/user.decorator'
+import { IReviewsService } from '../../reviews/interface/reviews'
 @Controller(Routes.USERS)
 export class UsersController {
-  constructor(@Inject(Services.USERS) private readonly userService: IUserService) {}
+  constructor(
+    @Inject(Services.USERS) private readonly userService: IUserService,
+    @Inject(Services.REVIEWS) private readonly reviewsServices: IReviewsService
+  ) {}
   @UseGuards(JwtAuthGuard)
   @Get('search')
   searchUsers(@Query('q') query: string) {
@@ -31,5 +35,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async getUser(@Param('id') id: number) {
     return this.userService.getUser({ id })
+  }
+  @Get(':id/reviews')
+  @UseGuards(JwtAuthGuard)
+  async getReviews(@Param('id') id: string) {
+    return await this.reviewsServices.getALLbyUser(parseInt(id))
   }
 }

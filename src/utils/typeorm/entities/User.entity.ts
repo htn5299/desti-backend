@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany
 import { Profile } from './Profile.entity'
 import { Friend } from './Friend.entity'
 import { Place } from './Place.entity'
+import { Review } from './Review.entity'
 
 @Entity({ name: 'users' })
 export class User {
@@ -31,4 +32,6 @@ export class User {
 
   @OneToMany(() => Place, (place) => place.createdBy)
   places: Place[]
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[]
 }

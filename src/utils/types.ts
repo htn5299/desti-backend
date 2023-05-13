@@ -30,3 +30,7 @@ export type UploadImageParams = {
   key: string
   file: Express.Multer.File
 }
+export type CreateReview = {
+  userId: number
+  placeId: number
+}

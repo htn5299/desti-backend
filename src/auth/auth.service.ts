@@ -20,7 +20,7 @@ export class AuthService implements IAuthService {
     @Inject(Services.USERS) private userService: IUserService,
     private jwtService: JwtService,
     private config: ConfigService,
-    @Inject(Services.REFRESHTOKEN)
+    @Inject(Services.REFRESH_TOKEN)
     private refreshTokenService: IRefreshTokenService
   ) {}
   async validateUser(userCredentials: ValidateUserDetails): Promise<User> {

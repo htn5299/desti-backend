@@ -27,11 +27,7 @@ export class PlacesService implements IPlacesService {
   }
 
   async getAll(): Promise<Place[]> {
-    const places = await this.placeRepository
-      .createQueryBuilder('place')
-      .leftJoinAndSelect('place.createdBy', 'user')
-      .getMany()
-    return places
+    return await this.placeRepository.createQueryBuilder('place').leftJoinAndSelect('place.createdBy', 'user').getMany()
   }
 
   async findOne(findPlace: FindPlace): Promise<Place> {

@@ -12,7 +12,6 @@ async function bootstrap() {
   const port = configService.get<number>('PORT')
   Logger.log('Port', port)
   Logger.log('Process env', process.env.NODE_ENV)
-  Logger.log('Config Service', configService.get<string>('NODE_ENV'))
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true
