@@ -6,7 +6,7 @@ export class Profile {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ default: '' })
+  @Column({ nullable: true })
   about?: string
 
   @Column({ nullable: true })

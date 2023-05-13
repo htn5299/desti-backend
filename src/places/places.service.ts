@@ -57,8 +57,7 @@ export class PlacesService implements IPlacesService {
 
   async getByUserId(userId: number): Promise<Place[]> {
     const createdBy = await this.userService.findOne({ id: userId })
-    const places = await this.placeRepository.find({ where: { createdBy } })
-    return places
+    return await this.placeRepository.find({ where: { createdBy } })
   }
   async search(query: string): Promise<Place[]> {
     if (!query) {

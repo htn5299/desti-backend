@@ -1,3 +1,4 @@
+import { Express } from 'express'
 export type CreateUserDetails = {
   email: string
   name: string
@@ -23,4 +24,9 @@ export type ValidateUserDetails = {
 export type Payload = {
   sub: number //id
   email: string //email
+}
+
+export type UploadImageParams = {
+  key: string
+  file: Express.Multer.File
 }

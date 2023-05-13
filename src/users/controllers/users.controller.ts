@@ -3,6 +3,7 @@ import { Routes, Services } from '../../utils/constranst'
 import { IUserService } from '../interfaces/user'
 import { JwtAuthGuard } from '../../auth/guard/jwt.guard'
 import { MyHttpException } from '../../utils/myHttpException'
+import { User } from '../utils/user.decorator'
 @Controller(Routes.USERS)
 export class UsersController {
   constructor(@Inject(Services.USERS) private readonly userService: IUserService) {}
@@ -19,8 +20,12 @@ export class UsersController {
     if (!email) {
       throw new MyHttpException('Invalid Query', HttpStatus.NOT_FOUND)
     }
-    const user = await this.userService.findOne({ email })
-    return user
+    return await this.userService.findOne({ email })
+  }
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@User('sub') id: number) {
+    return this.userService.getUser({ id })
   }
   @Get(':id')
   @UseGuards(JwtAuthGuard)

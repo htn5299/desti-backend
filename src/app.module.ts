@@ -9,6 +9,7 @@ import { PlacesModule } from './places/places.module'
 import { EventsModule } from './events/events.module'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { FriendsModule } from './friends/friends.module'
+import { ImageStorageModule } from './image-storage/image-storage.module'
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
@@ -32,7 +33,8 @@ import { FriendsModule } from './friends/friends.module'
     AuthModule,
     FriendsModule,
     PlacesModule,
-    EventsModule
+    EventsModule,
+    ImageStorageModule
   ],
   controllers: [],
   providers: []
