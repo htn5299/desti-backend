@@ -1,4 +1,4 @@
-import { IsLatitude, IsLongitude, IsNumber, IsOptional } from 'class-validator'
+import { IsLatitude, IsLongitude, IsOptional } from 'class-validator'
 
 export class UpdatePlaceDto {
   @IsOptional()
