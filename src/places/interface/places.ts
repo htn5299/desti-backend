@@ -9,4 +9,5 @@ export interface IPlacesService {
   findOne(findPlace: FindPlace): Promise<Place>
   update(findPlace: FindPlace, body: UpdatePlaceDto): Promise<Place>
   getByUserId(userId: number): Promise<Place[]>
+  getRating(placeId: number): Promise<{ rating: number }>
 }

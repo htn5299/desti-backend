@@ -31,14 +31,12 @@ export class PlacesService implements IPlacesService {
   }
 
   async findOne(findPlace: FindPlace): Promise<Place> {
-    // const createdBy = await this.userService.findUser({ id: findPlace?.createdId })
-
-    const place = await this.placeRepository.findOne({
-      where: {
-        id: findPlace.id
-        // createdBy
-      }
-    })
+    const place = await this.placeRepository
+      .createQueryBuilder('place')
+      .leftJoinAndSelect('place.createdBy', 'user')
+      // .leftJoinAndSelect('place.reviews', 'review')
+      .where('place.id = :id', { id: findPlace.id })
+      .getOne()
     if (!place) {
       throw new MyHttpException('Place not found', HttpStatus.NOT_FOUND)
     }
@@ -66,5 +64,14 @@ export class PlacesService implements IPlacesService {
       .orWhere(`unaccent(place.description) ILIKE unaccent(:query)`, { query: `%${modifiedQuery}%` })
       .limit(10)
       .getMany()
+  }
+  async getRating(placeId: number): Promise<{ rating: number }> {
+    return await this.placeRepository
+      .createQueryBuilder('place')
+      .leftJoinAndSelect('place.reviews', 'review')
+      .where('place.id = :id', { id: placeId })
+      .select('AVG(review.rating)', 'rating')
+      .groupBy('place.id')
+      .getRawOne()
   }
 }

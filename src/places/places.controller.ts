@@ -49,9 +49,21 @@ export class PlacesController {
     const findPlace: FindPlace = { id: placeId, createdId: userId }
     return await this.placesService.update(findPlace, body)
   }
+  @Get(':id/rating')
+  async getRating(@Param('id') id: string) {
+    const placeId = parseInt(id)
+    if (isNaN(placeId)) {
+      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
+    }
+    return this.placesService.getRating(placeId)
+  }
   @Get(':id/reviews')
   async getReviews(@Param('id') id: string) {
-    return this.reviewsService.getAllbyPlace(parseInt(id))
+    const placeId = parseInt(id)
+    if (isNaN(placeId)) {
+      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
+    }
+    return this.reviewsService.getAllbyPlace(placeId)
   }
   @Post(':id/reviews')
   async createReview(@Param('id') placeId: number, @User('sub') userId: number, @Body() content: CreateReviewDto) {
