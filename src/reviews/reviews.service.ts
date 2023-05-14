@@ -18,8 +18,6 @@ export class ReviewsService implements IReviewsService {
     @Inject(Services.PLACES) private readonly placesService: IPlacesService
   ) {}
   async getAllbyPlace(placeId: number): Promise<Review[]> {
-    // const place = await this.placesService.findOne({ id: placeId })
-    console.log(await this.findReview({ userId: 2, placeId: 8 }))
     return await this.reviewRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.place', 'place')

@@ -1,15 +1,32 @@
-import { Controller, Get, Query, Inject, UseGuards, HttpStatus, Param } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Query,
+  Inject,
+  UseGuards,
+  HttpStatus,
+  Param,
+  Patch,
+  Body,
+  UseInterceptors,
+  UploadedFile
+} from '@nestjs/common'
 import { Routes, Services } from '../../utils/constranst'
 import { IUserService } from '../interfaces/user'
 import { JwtAuthGuard } from '../../auth/guard/jwt.guard'
 import { MyHttpException } from '../../utils/myHttpException'
 import { User } from '../utils/user.decorator'
 import { IReviewsService } from '../../reviews/interface/reviews'
+import { UpdateProfileDto } from '../dto/UpdateProfile.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { FindUserParams, UpdateProfileParams } from '../../utils/types'
+import { IProfile } from '../interfaces/profile'
 @Controller(Routes.USERS)
 export class UsersController {
   constructor(
     @Inject(Services.USERS) private readonly userService: IUserService,
-    @Inject(Services.REVIEWS) private readonly reviewsServices: IReviewsService
+    @Inject(Services.REVIEWS) private readonly reviewsServices: IReviewsService,
+    @Inject(Services.PROFILE) private readonly profileService: IProfile
   ) {}
   @UseGuards(JwtAuthGuard)
   @Get('search')
@@ -30,6 +47,17 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async getMe(@User('sub') id: number) {
     return this.userService.getUser({ id })
+  }
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async updateProfile(
+    @User('sub') id: number,
+    @Body() content: UpdateProfileDto,
+    @UploadedFile() file: Express.MulterS3.File
+  ) {
+    const updateProfileParams: UpdateProfileParams = { id, about: content.about, file }
+    return await this.profileService.update(updateProfileParams)
   }
   @Get(':id')
   @UseGuards(JwtAuthGuard)

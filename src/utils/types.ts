@@ -1,4 +1,5 @@
 import { Express } from 'express'
+
 export type CreateUserDetails = {
   email: string
   name: string
@@ -22,15 +23,20 @@ export type ValidateUserDetails = {
   password: string
 }
 export type Payload = {
-  sub: number //id
-  email: string //email
+  sub: number
+  email: string
 }
 
 export type UploadImageParams = {
   key: string
-  file: Express.Multer.File
+  file: Express.MulterS3.File
 }
 export type CreateReview = {
   userId: number
   placeId: number
+}
+export type UpdateProfileParams = {
+  id: number
+  about?: string
+  file?: Express.MulterS3.File
 }
