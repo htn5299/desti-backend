@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Inject, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ImageStorageService } from './image-storage.service'
 import { Routes, Services } from '../utils/constranst'
 import { IImageStorageService } from './image.storage'
 

@@ -19,7 +19,7 @@ import { User } from '../utils/user.decorator'
 import { IReviewsService } from '../../reviews/interface/reviews'
 import { UpdateProfileDto } from '../dto/UpdateProfile.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { FindUserParams, UpdateProfileParams } from '../../utils/types'
+import { UpdateProfileParams } from '../../utils/types'
 import { IProfile } from '../interfaces/profile'
 @Controller(Routes.USERS)
 export class UsersController {
