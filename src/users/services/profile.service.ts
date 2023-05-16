@@ -20,6 +20,11 @@ export class ProfileService implements IProfile {
     if (!findProfile) {
       throw new MyHttpException('profile not found', HttpStatus.BAD_REQUEST)
     }
+    if (findProfile.avatar) {
+      const myUrlS3 = 'https://placewziz-nestjs-uploader.s3.ap-southeast-1.amazonaws.com'
+      const key = findProfile.avatar.substring(myUrlS3.length + 1)
+      await this.imageStorageService.delete(key)
+    }
     if (updateProfileParams.file) {
       const { url } = await this.imageStorageService.upload(updateProfileParams.file)
       findProfile.avatar = url

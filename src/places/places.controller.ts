@@ -3,20 +3,15 @@ import { Routes, Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 import { MyHttpException } from '../utils/myHttpException'
-import { CreateReview, FindPlace } from '../utils/types'
+import { FindPlace } from '../utils/types'
 import { CreatePlaceDto } from './dto/CreatePlace.dto'
 import { UpdatePlaceDto } from './dto/UpdatePlace.dto'
 import { IPlacesService } from './interface/places'
-import { IReviewsService } from '../reviews/interface/reviews'
-import { CreateReviewDto } from '../reviews/dto/CreateReview.dto'
 
 @Controller(Routes.PLACES)
 @UseGuards(JwtAuthGuard)
 export class PlacesController {
-  constructor(
-    @Inject(Services.PLACES) private readonly placesService: IPlacesService,
-    @Inject(Services.REVIEWS) private readonly reviewsService: IReviewsService
-  ) {}
+  constructor(@Inject(Services.PLACES) private readonly placesService: IPlacesService) {}
   @Post()
   async create(@User('sub') userId: number, @Body() body: CreatePlaceDto) {
     return await this.placesService.create(userId, body)
@@ -57,20 +52,6 @@ export class PlacesController {
     }
     return this.placesService.getRating(placeId)
   }
-  @Get(':id/reviews')
-  async getReviews(@Param('id') id: string) {
-    const placeId = parseInt(id)
-    if (isNaN(placeId)) {
-      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
-    }
-    return this.reviewsService.getAllbyPlace(placeId)
-  }
-  @Post(':id/reviews')
-  async createReview(@Param('id') placeId: number, @User('sub') userId: number, @Body() content: CreateReviewDto) {
-    const createReview: CreateReview = { placeId, userId }
-    return this.reviewsService.createReview(createReview, content)
-  }
-
   @Get('users/:id')
   async getByUserId(@Param('id') id: string) {
     const userId = parseInt(id)

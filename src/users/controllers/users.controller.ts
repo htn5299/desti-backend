@@ -25,7 +25,6 @@ import { IProfile } from '../interfaces/profile'
 export class UsersController {
   constructor(
     @Inject(Services.USERS) private readonly userService: IUserService,
-    @Inject(Services.REVIEWS) private readonly reviewsServices: IReviewsService,
     @Inject(Services.PROFILE) private readonly profileService: IProfile
   ) {}
   @UseGuards(JwtAuthGuard)
@@ -63,10 +62,5 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async getUser(@Param('id') id: number) {
     return this.userService.getUser({ id })
-  }
-  @Get(':id/reviews')
-  @UseGuards(JwtAuthGuard)
-  async getReviews(@Param('id') id: string) {
-    return await this.reviewsServices.getALLbyUser(parseInt(id))
   }
 }

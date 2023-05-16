@@ -12,7 +12,7 @@ export enum Routes {
   AUTH = 'auth',
   USERS = 'users',
   FRIENDS = 'friends',
-  // REVIEWS = 'reviews',
+  REVIEWS = 'reviews',
   PLACES = 'places',
   IMAGE_STORAGE = 'image-storage'
 }

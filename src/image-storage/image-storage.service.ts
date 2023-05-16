@@ -21,7 +21,7 @@ export class ImageStorageService implements IImageStorageService {
       const arr_name = file.originalname.split('.')
       const extension = arr_name.pop()
       const name = arr_name.join('.')
-      const key = objectId + '/' + slugString(name) + '.' + extension
+      const key = objectId + '_' + slugString(name) + '.' + extension
       await this.s3.putObject({
         Bucket: this.configService.getOrThrow('AWS_BUCKET_NAME'),
         ACL: 'public-read',
