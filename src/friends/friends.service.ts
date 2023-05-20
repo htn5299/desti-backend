@@ -4,7 +4,6 @@ import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { Repository } from 'typeorm'
 import { Services } from '../utils/constranst'
 import { IUserService } from '../users/interfaces/user'
-import { FriendDto } from './dto/Friend.dto'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
 import { User } from '../utils/typeorm/entities/User.entity'
@@ -22,6 +21,8 @@ export class FriendsService implements IFriendsService {
   async query(user1: number, user2: number): Promise<Friend> {
     return await this.friendRepository
       .createQueryBuilder('friends')
+      .leftJoinAndSelect('friends.requester', 'user as requester')
+      .leftJoinAndSelect('friends.receiver', 'user as receiver')
       .where('friends.requesterId = :user1 AND  friends.receiverId = :user2', {
         user1,
         user2
@@ -33,34 +34,39 @@ export class FriendsService implements IFriendsService {
       .getOne()
   }
 
-  async request(userId: number, friendDto: FriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.findOne({
-      id: friendDto.friendId
+  async request(userId: number, friendId: number): Promise<Friend> {
+    const requester = await this.userService.findOne({ id: userId })
+    const receiver = await this.userService.findOne({ id: friendId })
+    if (requester === receiver) {
+      throw new MyHttpException('Can not request yourself', HttpStatus.BAD_REQUEST)
+    }
+    await this.userService.findOne({
+      id: friendId
     })
     const query = await this.query(userId, friendId)
     if (query) {
       return await this.friendRepository.save({
         ...query,
-        requesterId: userId,
-        receiverId: friendId,
+        requester,
+        receiver,
         status: StatusCode.PENDING
       })
     }
     const newFriend = this.friendRepository.create({
-      requesterId: userId,
-      receiverId: friendId,
+      requester,
+      receiver,
       status: StatusCode.PENDING
     })
     return await this.friendRepository.save(newFriend)
   }
 
-  async response(userId: number, updateFriendDto: UpdateFriendDto): Promise<Friend> {
-    const { id: friendId } = await this.userService.findOne({
-      id: updateFriendDto.friendId
+  async response(userId: number, friendId: number, updateFriendDto: UpdateFriendDto): Promise<Friend> {
+    await this.userService.findOne({
+      id: friendId
     })
-
+    const user = await this.userService.findOne({ id: userId })
     const query = await this.query(userId, friendId)
-    if (query?.receiverId !== userId) {
+    if (query?.receiver.id !== user.id) {
       throw new MyHttpException(`Không có lời mời kết bạn từ người dùng ${friendId}`, HttpStatus.FORBIDDEN)
     }
     if (query?.status === StatusCode.ACCEPTED) {
@@ -76,29 +82,29 @@ export class FriendsService implements IFriendsService {
 
   async list(userId: number): Promise<User[]> {
     const query = await this.friendRepository
-      .createQueryBuilder('friend')
-      .where('(friend.requesterId = :userId OR friend.receiverId = :userId)', {
+      .createQueryBuilder('friends')
+      .leftJoinAndSelect('friends.requester', 'user as requester')
+      .leftJoinAndSelect('friends.receiver', 'user as receiver')
+      .where('(friends.requesterId = :userId OR friends.receiverId = :userId)', {
         userId
       })
-      .andWhere('friend.status = :status', { status: StatusCode.ACCEPTED })
+      .andWhere('friends.status = :status', { status: StatusCode.ACCEPTED })
       .getMany()
+    const user = await this.userService.findOne({ id: userId })
     return await Promise.all(
       query.map(async (friend) => {
-        const friendId = friend.requesterId === userId ? friend.receiverId : friend.requesterId
-        return await this.userService.findOne({ id: friendId })
+        return friend.receiver.id === user.id ? friend.requester : friend.receiver
       })
     )
   }
 
-  async delete(userId: number, friendDto: FriendDto): Promise<void> {
-    const { id: friendId } = await this.userService.findOne({
-      id: friendDto.friendId
-    })
-    const query = await this.query(userId, friendId)
-    if (query && query.status === StatusCode.ACCEPTED) {
-      await this.friendRepository.delete(query)
-    } else {
-      throw new MyHttpException('Không phải bạn bè', HttpStatus.BAD_REQUEST)
-    }
+  async delete(userId: number, friendId: number): Promise<void> {
+    await this.friendRepository
+      .createQueryBuilder('friend')
+      .delete()
+      .from(Friend)
+      .where('requesterId = :userId  AND receiverId = :friendId', { userId, friendId })
+      .orWhere('requesterId = :friendId AND receiverId = :userId', { friendId, userId })
+      .execute()
   }
 }

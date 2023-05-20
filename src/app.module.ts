@@ -11,6 +11,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
 import { FriendsModule } from './friends/friends.module'
 import { ImageStorageModule } from './image-storage/image-storage.module'
 import { ReviewsModule } from './reviews/reviews.module'
+import { FavouritesModule } from './favourites/favourites.module'
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { ReviewsModule } from './reviews/reviews.module'
     PlacesModule,
     EventsModule,
     ImageStorageModule,
-    ReviewsModule
+    ReviewsModule,
+    FavouritesModule
   ],
   controllers: [],
   providers: []

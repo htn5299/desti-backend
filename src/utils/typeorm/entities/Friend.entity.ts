@@ -15,11 +15,6 @@ export class Friend {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
-  requesterId: number
-  @Column()
-  receiverId: number
-
   @ManyToOne(() => User, (user) => user.friends)
   @JoinColumn({ name: 'requesterId' })
   requester: User

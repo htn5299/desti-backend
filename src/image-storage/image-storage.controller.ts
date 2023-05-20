@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Inject, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ImageStorageService } from './image-storage.service'
+import { Routes, Services } from '../utils/constranst'
+import { IImageStorageService } from './image.storage'
 
-@Controller('image-storage')
+@Controller(Routes.IMAGE_STORAGE)
 export class ImageStorageController {
-  constructor(private imageStorageService: ImageStorageService) {}
+  constructor(@Inject(Services.IMAGE_STORAGE) private readonly imageStorageService: IImageStorageService) {}
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.MulterS3.File) {

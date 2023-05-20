@@ -50,6 +50,7 @@ export class UsersService implements IUserService {
     //   const keywords = query.split(' ').map((keyword) => `%${keyword}%`);
     //   queryBuilder.where(`user.name ILIKE ANY(:keywords)`, { keywords });
     // } else
+    //Todo: search
     if (query.includes('@')) {
       const email = query.split('@')[0].split('.')[0]
       queryBuilder.where(`user.email ILIKE :email`, { email: `%${email}%` })

@@ -1,30 +1,36 @@
-import { Body, Controller, Delete, Get, HttpStatus, Inject, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { Routes, Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'
-import { FriendDto } from './dto/Friend.dto'
 import { IFriendsService } from './interface/friend'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
+import { FriendParamDto } from './dto/FriendParam.dto'
 @Controller(Routes.FRIENDS)
 export class FriendsController {
   constructor(@Inject(Services.FRIENDS) private readonly friendsService: IFriendsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('request')
-  async request(@User('sub') userId: number, @Body() friendDto: FriendDto) {
+  @Post(':id')
+  async request(@User('sub') userId: number, @Param() friend: FriendParamDto) {
+    const { id: friendId } = friend
     if (isNaN(userId)) {
       throw new MyHttpException('Unauthorized', HttpStatus.BAD_REQUEST)
     }
-    return await this.friendsService.request(userId, friendDto)
+    return await this.friendsService.request(userId, friendId)
   }
   @UseGuards(JwtAuthGuard)
-  @Patch('respone')
-  async response(@User('sub') userId: number, @Body() updateFriendDto: UpdateFriendDto) {
+  @Patch(':id')
+  async response(
+    @User('sub') userId: number,
+    @Param() friend: FriendParamDto,
+    @Body() updateFriendDto: UpdateFriendDto
+  ) {
+    const { id: friendId } = friend
     if (isNaN(userId)) {
       throw new MyHttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
     }
-    return await this.friendsService.response(userId, updateFriendDto)
+    return await this.friendsService.response(userId, friendId, updateFriendDto)
   }
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -32,8 +38,12 @@ export class FriendsController {
     return await this.friendsService.list(userId)
   }
   @UseGuards(JwtAuthGuard)
-  @Delete('delete')
-  async delete(@User('sub') userId: number, @Body() friendDto: FriendDto) {
-    await this.friendsService.delete(userId, friendDto)
+  @Delete(':id')
+  async delete(@User('sub') userId: number, @Param() friend: FriendParamDto) {
+    const { id: friendId } = friend
+    if (isNaN(friendId)) {
+      throw new MyHttpException('Friend Id must be a number', HttpStatus.UNAUTHORIZED)
+    }
+    await this.friendsService.delete(userId, friendId)
   }
 }
