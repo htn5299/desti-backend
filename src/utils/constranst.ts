@@ -6,7 +6,8 @@ export enum Services {
   REVIEWS = 'REVIEWS_SERVICE',
   PLACES = 'PLACES_SERVICE',
   IMAGE_STORAGE = 'IMAGE_STORAG_SERVICE',
-  PROFILE = 'PROFILE_SERVICE'
+  PROFILE = 'PROFILE_SERVICE',
+  FAVOURITES = 'FAVOURITES_SERVICE'
 }
 export enum Routes {
   AUTH = 'auth',
@@ -14,5 +15,6 @@ export enum Routes {
   FRIENDS = 'friends',
   REVIEWS = 'reviews',
   PLACES = 'places',
-  IMAGE_STORAGE = 'image-storage'
+  IMAGE_STORAGE = 'image-storage',
+  FAVOURITES = 'favourites'
 }

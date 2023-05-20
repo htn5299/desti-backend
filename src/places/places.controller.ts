@@ -1,4 +1,16 @@
-import { Body, Controller, Patch, Get, HttpStatus, Inject, Param, Post, Query, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards
+} from '@nestjs/common'
 import { Routes, Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
@@ -18,8 +30,11 @@ export class PlacesController {
   }
 
   @Get()
-  async getAll() {
-    return await this.placesService.getAll()
+  async getAll(@Query('page', ParseIntPipe) page: number) {
+    if (page < 1) {
+      throw new MyHttpException('Page must not under 1', HttpStatus.BAD_REQUEST)
+    }
+    return await this.placesService.getAll(page)
   }
 
   @Get('/search')

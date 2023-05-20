@@ -37,29 +37,11 @@ export class ReviewsService implements IReviewsService {
       return await reviewBuilder.where('user.id = :id', { id: reviewQuery.user }).addSelect('place').getMany()
     } else if (reviewQuery.place) {
       return await reviewBuilder.where('place.id = :id', { id: reviewQuery.place }).addSelect('user').getMany()
+    } else {
+      throw new MyHttpException(`Can't query`, HttpStatus.BAD_REQUEST)
     }
-    throw new MyHttpException('Can not query', HttpStatus.BAD_REQUEST)
   }
-  // async getAllbyPlace(placeId: number): Promise<Review[]> {
-  //   return await this.reviewRepository
-  //     .createQueryBuilder('review')
-  //     .leftJoinAndSelect('review.place', 'place')
-  //     .leftJoinAndSelect('review.user', 'user')
-  //     .where('place.id = :id', { id: placeId })
-  //     .select('review')
-  //     .addSelect('user')
-  //     .getMany()
-  // }
-  // async getALLbyUser(userId: number): Promise<Review[]> {
-  //   return await this.reviewRepository
-  //     .createQueryBuilder('review')
-  //     .leftJoinAndSelect('review.user', 'user')
-  //     .leftJoinAndSelect('review.place', 'place')
-  //     .where('user.id = :id', { id: userId })
-  //     .select('review')
-  //     .addSelect('place')
-  //     .getMany()
-  // }
+
   async create(userplaceId: CreateReview, content: CreateReviewDto): Promise<Review> {
     const review = await this.findReview({ userId: userplaceId.userId, placeId: userplaceId.placeId })
     if (review) {
@@ -77,5 +59,16 @@ export class ReviewsService implements IReviewsService {
       .leftJoinAndSelect('review.user', 'user')
       .where('user.id = :userId AND place.id = :placeId', { userId: userplaceId.userId, placeId: userplaceId.placeId })
       .getOne()
+  }
+  async reviewNewfeed(page: number): Promise<Review[]> {
+    return await this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.place', 'place')
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .take(3)
+      .skip(3 * (page - 1))
+      .orderBy('review.updatedAt', 'DESC')
+      .getMany()
   }
 }

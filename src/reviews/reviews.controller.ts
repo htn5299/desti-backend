@@ -26,7 +26,12 @@ export class ReviewsController {
   }
   @Patch('places/:id')
   async editReview(@Param('id', ParseIntPipe) id: number) {
-    //TODO: handle Edit Review
+    //Todo: handle Edit Review
     return 'handle edit review'
+  }
+  @Get('feed')
+  async newsFeed(@Query('page', ParseIntPipe) page: number) {
+    //Todo: paginate newsfeed with reviews
+    return await this.reviewsService.reviewNewfeed(page)
   }
 }

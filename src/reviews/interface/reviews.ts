@@ -8,4 +8,5 @@ export interface IReviewsService {
   getAll(reviewQuery: ReviewQueryDto): Promise<Review[] | Review>
   // getAllbyPlace(placeId: number): Promise<Review[]>
   // getALLbyUser(userId: number): Promise<Review[]>
+  reviewNewfeed(page: number): Promise<Review[]>
 }

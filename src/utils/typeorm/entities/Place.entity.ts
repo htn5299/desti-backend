@@ -11,6 +11,7 @@ import {
 import { StatusCode } from './StatusCode'
 import { User } from './User.entity'
 import { Review } from './Review.entity'
+import { Favourite } from './Favourite.entity'
 
 @Entity({ name: 'places' })
 export class Place {
@@ -44,4 +45,7 @@ export class Place {
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date
+
+  @ManyToOne(() => Favourite, (favourites) => favourites.place)
+  favourites: Favourite[]
 }

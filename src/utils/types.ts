@@ -40,3 +40,9 @@ export type UpdateProfileParams = {
   about?: string
   file?: Express.MulterS3.File
 }
+export type FavouriteType = {
+  userId: number
+  placeId: number
+  here?: boolean
+  want?: boolean
+}
