@@ -1,5 +1,5 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { Repository } from 'typeorm'
 import { Services } from '../utils/constranst'

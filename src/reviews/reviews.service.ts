@@ -3,7 +3,7 @@ import { IReviewsService } from './interface/reviews'
 import { Review } from '../utils/typeorm/entities/Review.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { CreateReview } from '../utils/types'
+import { UserPlaceIndex } from '../utils/types'
 import { CreateReviewDto } from './dto/CreateReview.dto'
 import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
@@ -18,6 +18,7 @@ export class ReviewsService implements IReviewsService {
     @Inject(Services.USERS) private readonly usersService: IUserService,
     @Inject(Services.PLACES) private readonly placesService: IPlacesService
   ) {}
+
   async getAll(reviewQuery: ReviewQueryDto) {
     const reviewBuilder = await this.reviewRepository
       .createQueryBuilder('review')
@@ -42,16 +43,17 @@ export class ReviewsService implements IReviewsService {
     }
   }
 
-  async create(userplaceId: CreateReview, content: CreateReviewDto): Promise<Review> {
+  async create(userplaceId: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
     const review = await this.findReview({ userId: userplaceId.userId, placeId: userplaceId.placeId })
     if (review) {
-      throw new MyHttpException('You reviewd this place', HttpStatus.BAD_REQUEST)
+      return await this.reviewRepository.save({ ...review, ...content })
     }
     const user = await this.usersService.findOne({ id: userplaceId.userId })
     const place = await this.placesService.findOne({ id: userplaceId.placeId })
     const newReview = this.reviewRepository.create({ ...content, user, place })
     return await this.reviewRepository.save(newReview)
   }
+
   async findReview(userplaceId: { userId: number; placeId: number }): Promise<Review> {
     return await this.reviewRepository
       .createQueryBuilder('review')
@@ -60,6 +62,7 @@ export class ReviewsService implements IReviewsService {
       .where('user.id = :userId AND place.id = :placeId', { userId: userplaceId.userId, placeId: userplaceId.placeId })
       .getOne()
   }
+
   async reviewNewfeed(page: number): Promise<Review[]> {
     return await this.reviewRepository
       .createQueryBuilder('review')

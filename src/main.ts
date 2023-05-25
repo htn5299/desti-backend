@@ -9,8 +9,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT')
-  Logger.log('Port', port)
-  Logger.log('Process env', process.env.NODE_ENV)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true
@@ -18,4 +16,8 @@ async function bootstrap() {
   )
   await app.listen(port || 3000)
 }
-bootstrap()
+
+bootstrap().then(() => {
+  Logger.log(`Process env ${process.env.NODE_ENV}`, 'NestApplication')
+  Logger.log(`Running on port ${process.env.PORT}`, 'NestApplication')
+})

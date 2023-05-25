@@ -36,6 +36,6 @@ export class User {
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[]
 
-  @ManyToOne(() => Favourite, (favourites) => favourites.user)
+  @OneToMany(() => Favourite, (favourites) => favourites.user)
   favourites: Favourite[]
 }

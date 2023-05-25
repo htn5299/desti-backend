@@ -1,11 +1,6 @@
-import { IsBoolean, IsInt, IsOptional } from 'class-validator'
-import { Type } from 'class-transformer'
+import { IsBoolean, IsOptional } from 'class-validator'
 
 export class FavouriteDto {
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  placeId: number
   @IsBoolean()
   @IsOptional()
   here: boolean

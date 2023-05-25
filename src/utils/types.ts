@@ -31,7 +31,7 @@ export type UploadImageParams = {
   key: string
   file: Express.MulterS3.File
 }
-export type CreateReview = {
+export type UserPlaceIndex = {
   userId: number
   placeId: number
 }
@@ -41,8 +41,6 @@ export type UpdateProfileParams = {
   file?: Express.MulterS3.File
 }
 export type FavouriteType = {
-  userId: number
-  placeId: number
   here?: boolean
   want?: boolean
 }
