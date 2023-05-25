@@ -46,6 +46,6 @@ export class Place {
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date
 
-  @ManyToOne(() => Favourite, (favourites) => favourites.place)
+  @OneToMany(() => Favourite, (favourites) => favourites.place)
   favourites: Favourite[]
 }
