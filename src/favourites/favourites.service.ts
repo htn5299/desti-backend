@@ -20,14 +20,15 @@ export class FavouritesService implements IFavourites {
   ) {}
 
   async getFavourite(userPlaceIndex: UserPlaceIndex): Promise<Favourite> {
+    const { userId, placeId } = userPlaceIndex
     const existingOne = await this.favouriteRepo.findOne({
       where: {
-        userId: userPlaceIndex.userId,
-        placeId: userPlaceIndex.placeId
+        userId,
+        placeId
       }
     })
     if (!existingOne) {
-      throw new MyHttpException('Not favourite here!', HttpStatus.BAD_REQUEST)
+      return await this.setFavourite({ placeId, userId, here: false, want: false })
     }
     return existingOne
   }

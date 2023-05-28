@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer'
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany, ManyToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm'
 import { Profile } from './Profile.entity'
 import { Friend } from './Friend.entity'
 import { Place } from './Place.entity'

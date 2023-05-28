@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { MyHttpException } from '../utils/myHttpException'
 import { ConfigService } from '@nestjs/config'
 import { IRefreshTokenService } from './interfaces/refreshToken'
+
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
@@ -23,6 +24,7 @@ export class AuthService implements IAuthService {
     @Inject(Services.REFRESH_TOKEN)
     private refreshTokenService: IRefreshTokenService
   ) {}
+
   async validateUser(userCredentials: ValidateUserDetails): Promise<User> {
     const user = await this.userService.findOne(
       { email: userCredentials.email },
@@ -72,6 +74,7 @@ export class AuthService implements IAuthService {
       refreshToken
     }
   }
+
   async signOut(refreshToken: string): Promise<TokenData> {
     await this.refreshTokenService.deleteToken(refreshToken)
     return {
@@ -79,6 +82,7 @@ export class AuthService implements IAuthService {
       refreshToken: null
     }
   }
+
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     try {
       const existingToken = await this.refreshTokenService.findToken(refreshToken)
@@ -91,6 +95,16 @@ export class AuthService implements IAuthService {
       return { accessToken }
     } catch (error) {
       throw new MyHttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    }
+  }
+
+  async handleVerifyToken(token: string): Promise<Payload> {
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: this.config.get<string>('JWT_SECRET_KEY')
+      })
+    } catch (e) {
+      throw new MyHttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED)
     }
   }
 }

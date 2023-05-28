@@ -19,12 +19,8 @@ export class FavouritesController {
 
   //Update want or here
   @Post()
-  async setFavourite(
-    @User('sub') userId: number,
-    @Query('place', ParseIntPipe) placeId: number,
-    @Body() body: FavouriteDto
-  ) {
-    const content: UserPlaceIndex & FavouriteType = { userId, placeId, ...body }
+  async setFavourite(@User('sub') userId: number, @Body() body: FavouriteDto) {
+    const content: UserPlaceIndex & FavouriteType = { userId, ...body }
     return await this.favouritesService.setFavourite(content)
   }
 
