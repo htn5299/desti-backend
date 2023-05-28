@@ -8,7 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer
 } from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
+import { Server } from 'socket.io'
 import { Services } from '../utils/constranst'
 import { IAuthService } from '../auth/interfaces/auth'
 import { Inject, Logger } from '@nestjs/common'
