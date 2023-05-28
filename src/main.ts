@@ -14,10 +14,11 @@ async function bootstrap() {
       whitelist: true
     })
   )
-  await app.listen(port || 3000)
+  await app.listen(port || 3003)
 }
 
 bootstrap().then(() => {
-  Logger.log(`Process env ${process.env.NODE_ENV}`, 'NestApplication')
-  Logger.log(`Running on port ${process.env.PORT}`, 'NestApplication')
+  const logger: Logger = new Logger('NestApplication')
+  logger.log(`Process env ${process.env.NODE_ENV}`)
+  logger.log(`Running on port ${process.env.PORT}`)
 })
