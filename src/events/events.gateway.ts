@@ -70,6 +70,4 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleMessageCreateEvent(payload: Review) {
     this.server.to(`place-${payload.place.id}`).emit('onReview', payload)
   }
-
-  //Todo: handle notification
 }
