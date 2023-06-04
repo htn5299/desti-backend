@@ -1,8 +1,7 @@
-version: '1:0:2'
+version: '3.7'
 services:
-  destidata-dev:
+  desti-db:
     image: postgres:14
-    container_name: destidata-dev
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_DB_USERNAME}
@@ -10,10 +9,13 @@ services:
     ports:
       - ${POSTGRES_DB_PORT}:5432
     volumes:
-      - destidata:/var/lib/postgresql/data
-    networks:
-      -desti:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.db
+      - desti-data:/var/lib/postgresql/data
+  desti-nestjs:
+    image: desti-nestjs-image
+    depends_on:
+      - desti-db
+    ports:
+      - ${PORT}:3001
 volumes:
-  destidata:
-networks:
-  -desti:
+  desti-data:
