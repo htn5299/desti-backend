@@ -5,7 +5,7 @@ import { ValidationPipe, Logger } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  app.enableCors({ origin: ['http://localhost:3000'], credentials: true })
+  // app.enableCors({ origin: ['http://localhost:3000'], credentials: true })
   app.setGlobalPrefix('api')
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT')
@@ -14,7 +14,7 @@ async function bootstrap() {
       whitelist: true
     })
   )
-  await app.listen(port || 3003)
+  await app.listen(port || 3000)
 }
 
 bootstrap().then(() => {

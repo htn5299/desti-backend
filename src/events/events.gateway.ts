@@ -19,10 +19,10 @@ import { Review } from '../utils/typeorm/entities/Review.entity'
 
 @WebSocketGateway({
   namespace: 'events',
-  cors: {
-    origin: ['http://localhost:3000'],
-    credentials: true
-  },
+  // cors: {
+  //   origin: ['http://localhost:3000'],
+  //   credentials: true
+  // },
   pingInterval: 10000,
   pingTimeout: 15000
 })
