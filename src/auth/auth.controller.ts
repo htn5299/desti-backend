@@ -5,11 +5,12 @@ import { IUserService } from '../users/interfaces/user'
 import { CreateUserDto } from './dto/CreateUser.dto'
 import { instanceToPlain } from 'class-transformer'
 import { IAuthService } from './interfaces/auth'
-import { SignInDto } from './dto/SignIn.dto'
 import { JwtAuthGuard } from './guard/jwt.guard'
 import { Payload } from '../utils/types'
 import { User } from '../users/utils/user.decorator'
 import { RefreshTokenDto } from './dto/RefreshToken.dto'
+import { SignInDto } from './dto/signin.dto'
+
 @Controller(Routes.AUTH)
 export class AuthController {
   constructor(
