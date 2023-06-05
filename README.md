@@ -78,4 +78,10 @@ Nest is [MIT licensed](LICENSE).
 
 ```bash
 CREATE EXTENSION IF NOT EXISTS unaccent;
+
+docker exec -it desti-database bash
+whoami
+psql -U username -W postgres
+\dt
+
 ```
