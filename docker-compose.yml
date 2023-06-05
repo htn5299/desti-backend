@@ -1,13 +1,31 @@
-version: '1.0.2'
+version: '3.7'
 services:
-  placewiz-db:
-    image: postgres:${POSTGRES_VERSION}
-    container_name: ${CONTAINER_NAME}
-    ports:
-      - ${POSTGRES_PORT}:5432
+  desti-database:
+    image: postgres:14
+    container_name: ${POSTGRES_DB_HOST}
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_DB_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_DB_PASSWORD}
+    ports:
+      - 5421:${POSTGRES_DB_PORT}
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-#host.docker.internal
+      - desti-data:/var/lib/postgresql/data
+      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    networks:
+      - desti-network
+
+  desti-nestjs:
+    container_name: desti-nestjs
+    image: desti-nestjs:1.0
+    depends_on:
+      - ${POSTGRES_DB_HOST}
+    ports:
+      - 8001:${PORT}
+    networks:
+      - desti-network
+volumes:
+  desti-data:
+
+networks:
+  desti-network:

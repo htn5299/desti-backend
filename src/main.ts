@@ -14,7 +14,7 @@ async function bootstrap() {
       whitelist: true
     })
   )
-  await app.listen(port || 3003)
+  await app.listen(port || 3000)
 }
 
 bootstrap().then(() => {

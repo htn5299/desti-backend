@@ -17,7 +17,15 @@ import { IGatewaySessionManager } from './gateway.session'
 import { OnEvent } from '@nestjs/event-emitter'
 import { Review } from '../utils/typeorm/entities/Review.entity'
 
-@WebSocketGateway({ namespace: 'events' })
+@WebSocketGateway({
+  namespace: 'events',
+  cors: {
+    origin: ['http://localhost:3000'],
+    credentials: true
+  },
+  pingInterval: 10000,
+  pingTimeout: 15000
+})
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private logger: Logger = new Logger('AppGateWay')
   @WebSocketServer()
@@ -58,12 +66,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   onReviewJoin(@MessageBody() data: any, @ConnectedSocket() client: AuthenticatedSocket) {
     client.join(`place-${data.placeId}`)
     client.to(`place-${data.placeId}`).emit('userJoin', { client: client.data.user.email })
+    console.log(`userJoin: ${client.data.user.email} | place-${data.placeId}`)
   }
 
   @SubscribeMessage('onPlaceLeave')
   onReviewLeave(@MessageBody() data: any, @ConnectedSocket() client: AuthenticatedSocket) {
     client.leave(`place-${data.placeId}`)
     client.to(`place-${data.placeId}`).emit('userLeave', { client: client.data.user.email })
+    console.log(`userLeave: ${client.data.user.email} | place-${data.placeId}`)
   }
 
   @OnEvent('review.create')

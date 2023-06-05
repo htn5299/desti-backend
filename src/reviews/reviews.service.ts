@@ -35,12 +35,13 @@ export class ReviewsService implements IReviewsService {
         .addSelect('place')
         .getOne()
     } else if (reviewQuery.user) {
-      return await reviewBuilder.where('user.id = :id', { id: reviewQuery.user }).addSelect('place').getMany()
+      await reviewBuilder.where('user.id = :id', { id: reviewQuery.user })
     } else if (reviewQuery.place) {
-      return await reviewBuilder.where('place.id = :id', { id: reviewQuery.place }).addSelect('user').getMany()
+      await reviewBuilder.where('place.id = :id', { id: reviewQuery.place })
     } else {
       throw new MyHttpException(`Can't query`, HttpStatus.BAD_REQUEST)
     }
+    return reviewBuilder.addSelect('user').addSelect('place').orderBy('review.updatedAt', 'DESC').getMany()
   }
 
   async create(userplaceId: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {

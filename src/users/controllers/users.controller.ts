@@ -20,12 +20,14 @@ import { UpdateProfileDto } from '../dto/UpdateProfile.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UpdateProfileParams } from '../../utils/types'
 import { IProfile } from '../interfaces/profile'
+
 @Controller(Routes.USERS)
 export class UsersController {
   constructor(
     @Inject(Services.USERS) private readonly userService: IUserService,
     @Inject(Services.PROFILE) private readonly profileService: IProfile
   ) {}
+
   @UseGuards(JwtAuthGuard)
   @Get('search')
   searchUsers(@Query('q') query: string) {
@@ -34,6 +36,7 @@ export class UsersController {
     }
     return this.userService.search(query)
   }
+
   @Get('check')
   async findUser(@Query('email') email: string) {
     if (!email) {
@@ -41,11 +44,13 @@ export class UsersController {
     }
     return await this.userService.findOne({ email })
   }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMe(@User('sub') id: number) {
     return this.userService.getUser({ id })
   }
+
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
@@ -57,6 +62,7 @@ export class UsersController {
     const updateProfileParams: UpdateProfileParams = { id, about: content.about, file }
     return await this.profileService.update(updateProfileParams)
   }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getUser(@Param('id') id: number) {
