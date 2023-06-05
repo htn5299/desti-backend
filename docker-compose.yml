@@ -1,4 +1,4 @@
-version: '3.7'
+version: '1.0'
 services:
   desti-database:
     image: postgres:14
@@ -10,7 +10,7 @@ services:
     ports:
       - 5421:${POSTGRES_DB_PORT}
     volumes:
-      - desti-data:/var/lib/postgresql/data
+      - desti-volume:/var/lib/postgresql/data
       - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     networks:
       - desti-network
@@ -25,7 +25,7 @@ services:
     networks:
       - desti-network
 volumes:
-  desti-data:
+  desti-volume:
 
 networks:
   desti-network:
