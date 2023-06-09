@@ -13,7 +13,7 @@ import { ImageStorageModule } from './image-storage/image-storage.module'
 import { ReviewsModule } from './reviews/reviews.module'
 import { FavouritesModule } from './favourites/favourites.module'
 import { CommentsModule } from './comments/comments.module'
-import { NewsfeedModule } from './newsfeed/newsfeed.module';
+import { NewsfeedModule } from './newsfeed/newsfeed.module'
 
 @Module({
   imports: [
