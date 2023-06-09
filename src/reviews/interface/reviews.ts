@@ -9,6 +9,4 @@ export interface IReviewsService {
   findReview(userplaceId: UserPlaceIndex): Promise<Review>
 
   getAll(reviewQuery: ReviewQueryDto): Promise<Review[] | Review>
-
-  reviewNewfeed(page: number): Promise<Review[]>
 }

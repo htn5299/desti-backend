@@ -63,16 +63,4 @@ export class ReviewsService implements IReviewsService {
       .where('user.id = :userId AND place.id = :placeId', { userId: userplaceId.userId, placeId: userplaceId.placeId })
       .getOne()
   }
-
-  async reviewNewfeed(page: number): Promise<Review[]> {
-    return await this.reviewRepository
-      .createQueryBuilder('review')
-      .leftJoinAndSelect('review.place', 'place')
-      .leftJoinAndSelect('review.user', 'user')
-      .leftJoinAndSelect('user.profile', 'profile')
-      .take(3)
-      .skip(3 * (page - 1))
-      .orderBy('review.updatedAt', 'DESC')
-      .getMany()
-  }
 }

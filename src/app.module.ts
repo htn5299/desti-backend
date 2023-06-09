@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
+import configuration from './utils/config/configuration'
+import { entities } from './utils/typeorm'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from './users/users.module'
-import configuration from './utils/config/configuration'
-import { entities } from './utils/typeorm'
 import { AuthModule } from './auth/auth.module'
 import { PlacesModule } from './places/places.module'
 import { EventsModule } from './events/events.module'
@@ -12,6 +12,8 @@ import { FriendsModule } from './friends/friends.module'
 import { ImageStorageModule } from './image-storage/image-storage.module'
 import { ReviewsModule } from './reviews/reviews.module'
 import { FavouritesModule } from './favourites/favourites.module'
+import { CommentsModule } from './comments/comments.module'
+import { NewsfeedModule } from './newsfeed/newsfeed.module';
 
 @Module({
   imports: [
@@ -39,7 +41,9 @@ import { FavouritesModule } from './favourites/favourites.module'
     EventsModule,
     ImageStorageModule,
     ReviewsModule,
-    FavouritesModule
+    FavouritesModule,
+    CommentsModule,
+    NewsfeedModule
   ],
   controllers: [],
   providers: []

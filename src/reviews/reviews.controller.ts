@@ -32,10 +32,4 @@ export class ReviewsController {
     this.eventEmitter.emit('review.create', review)
     return review
   }
-
-  @Get('feed')
-  async newsFeed(@Query('page', ParseIntPipe) page: number) {
-    //Todo: paginate newsfeed with reviews
-    return await this.reviewsService.reviewNewfeed(page)
-  }
 }

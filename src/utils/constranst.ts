@@ -8,7 +8,9 @@ export enum Services {
   IMAGE_STORAGE = 'IMAGE_STORAG_SERVICE',
   PROFILE = 'PROFILE_SERVICE',
   FAVOURITES = 'FAVOURITES_SERVICE',
-  GATEWAY_SESSION_MANAGER = 'GATEWAY_SESSION_MANAGER'
+  GATEWAY_SESSION_MANAGER = 'GATEWAY_SESSION_MANAGER',
+  COMMENTS = 'COMMENTS_SERVICE',
+  NEWSFEED = 'NEWSFEED_SERVICE'
 }
 
 export enum Routes {
@@ -18,5 +20,7 @@ export enum Routes {
   REVIEWS = 'reviews',
   PLACES = 'places',
   IMAGE_STORAGE = 'image-storage',
-  FAVOURITES = 'favourites'
+  FAVOURITES = 'favourites',
+  COMMENTS = 'comments',
+  NEWSFEED = 'newsfeed'
 }
