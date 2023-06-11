@@ -10,6 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CreatePlaceDto } from './dto/CreatePlace.dto'
 import { UpdatePlaceDto } from './dto/UpdatePlace.dto'
 import { IPlacesService } from './interface/places'
+
 @Injectable()
 export class PlacesService implements IPlacesService {
   constructor(
@@ -17,6 +18,7 @@ export class PlacesService implements IPlacesService {
     @InjectRepository(Place) private readonly placeRepository: Repository<Place>,
     private readonly eventEmmiter: EventEmitter2
   ) {}
+
   async create(userId: number, body: CreatePlaceDto): Promise<Place> {
     const user = await this.userService.findOne({ id: userId })
     const { name, description, latitude, longitude } = body
@@ -58,6 +60,7 @@ export class PlacesService implements IPlacesService {
     const createdBy = await this.userService.findOne({ id: userId })
     return await this.placeRepository.find({ where: { createdBy } })
   }
+
   async search(query: string): Promise<Place[]> {
     if (!query) {
       throw new MyHttpException('No have any query', HttpStatus.BAD_REQUEST)
@@ -70,12 +73,13 @@ export class PlacesService implements IPlacesService {
       .limit(10)
       .getMany()
   }
+
   async getRating(placeId: number): Promise<{ rating: number }> {
     return await this.placeRepository
       .createQueryBuilder('place')
       .leftJoinAndSelect('place.reviews', 'review')
       .where('place.id = :id', { id: placeId })
-      .select('AVG(review.rating)', 'rating')
+      .select('ROUND(AVG(review.rating),1)', 'rating')
       .groupBy('place.id')
       .getRawOne()
   }

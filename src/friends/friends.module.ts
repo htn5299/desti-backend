@@ -14,6 +14,12 @@ import { FriendsService } from './friends.service'
       provide: Services.FRIENDS,
       useClass: FriendsService
     }
+  ],
+  exports: [
+    {
+      provide: Services.FRIENDS,
+      useClass: FriendsService
+    }
   ]
 })
 export class FriendsModule {}

@@ -5,9 +5,10 @@ import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Place } from '../utils/typeorm/entities/Place.entity'
 import { UsersModule } from '../users/users.module'
+import { ReviewsModule } from '../reviews/reviews.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Place]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Place]), UsersModule, ReviewsModule],
   controllers: [PlacesController],
   providers: [
     {

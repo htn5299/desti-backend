@@ -7,6 +7,7 @@ import { hashPassword } from '../../utils/helpers'
 import { IUserService } from '../interfaces/user'
 import { Profile } from '../../utils/typeorm/entities/Profile.entity'
 import { MyHttpException } from '../../utils/myHttpException'
+
 @Injectable()
 export class UsersService implements IUserService {
   constructor(
@@ -14,6 +15,7 @@ export class UsersService implements IUserService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>
   ) {}
+
   async create(userDetails: CreateUserDetails) {
     const existingUser = await this.userRepository.findOneBy({
       email: userDetails.email
@@ -29,6 +31,7 @@ export class UsersService implements IUserService {
     user.profile = profile
     return await this.userRepository.save(user)
   }
+
   async findOne(findUserParams: FindUserParams, option?: Partial<{ selectAll: boolean }>): Promise<User> {
     const selections: (keyof User)[] = ['id', 'email', 'name']
     const selectionswithPassword: (keyof User)[] = [...selections, 'password']
@@ -41,16 +44,13 @@ export class UsersService implements IUserService {
     }
     return user
   }
+
   save(user: User): Promise<User> {
     return this.userRepository.save(user)
   }
+
   async search(query: string) {
     const queryBuilder = this.userRepository.createQueryBuilder('user')
-    // if (query.includes(' ')) {
-    //   const keywords = query.split(' ').map((keyword) => `%${keyword}%`);
-    //   queryBuilder.where(`user.name ILIKE ANY(:keywords)`, { keywords });
-    // } else
-    //Todo: search
     if (query.includes('@')) {
       const email = query.split('@')[0].split('.')[0]
       queryBuilder.where(`user.email ILIKE :email`, { email: `%${email}%` })
@@ -61,6 +61,7 @@ export class UsersService implements IUserService {
     }
     return queryBuilder.limit(10).select(['user.name', 'user.email', 'user.id']).getMany()
   }
+
   async getUser(findUserParams: FindUserParams): Promise<User> {
     const { id, email } = findUserParams
 

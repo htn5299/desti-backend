@@ -1,4 +1,5 @@
 import {
+  Check,
   Column,
   CreateDateColumn,
   Entity,
@@ -11,6 +12,7 @@ import { Place } from './Place.entity'
 import { User } from './User.entity'
 
 @Entity({ name: 'reviews' })
+@Check('"rating" >=1 AND "rating"<=5')
 export class Review {
   @PrimaryGeneratedColumn()
   id: number

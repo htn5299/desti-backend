@@ -1,14 +1,15 @@
-import { ExecutionContext, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ExecutionContext, HttpStatus, Injectable } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Observable } from 'rxjs'
 import { MyHttpException } from '../../utils/myHttpException'
-import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host'
-import { Socket } from 'socket.io'
+
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     return super.canActivate(context)
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleRequest(err: any, user: any, info: any) {
     if (err || !user) {
       throw new MyHttpException('Unauthorized', HttpStatus.UNAUTHORIZED)

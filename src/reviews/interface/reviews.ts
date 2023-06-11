@@ -4,9 +4,9 @@ import { CreateReviewDto } from '../dto/CreateReview.dto'
 import { ReviewQueryDto } from '../dto/ReviewQuery.dto'
 
 export interface IReviewsService {
-  create(userplaceId: UserPlaceIndex, content: CreateReviewDto): Promise<Review>
+  create(userPlaceIndex: UserPlaceIndex, content: CreateReviewDto): Promise<Review>
 
-  findReview(userplaceId: UserPlaceIndex): Promise<Review>
+  findReview(userPlaceIndex: UserPlaceIndex): Promise<Review>
 
   getAll(reviewQuery: ReviewQueryDto): Promise<Review[] | Review>
 }

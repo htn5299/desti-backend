@@ -44,23 +44,26 @@ export class ReviewsService implements IReviewsService {
     return reviewBuilder.addSelect('user').addSelect('place').orderBy('review.updatedAt', 'DESC').getMany()
   }
 
-  async create(userplaceId: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
-    const review = await this.findReview({ userId: userplaceId.userId, placeId: userplaceId.placeId })
+  async create(userPlaceIndex: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
+    const review = await this.findReview({ userId: userPlaceIndex.userId, placeId: userPlaceIndex.placeId })
     if (review) {
       return await this.reviewRepository.save({ ...review, ...content })
     }
-    const user = await this.usersService.findOne({ id: userplaceId.userId })
-    const place = await this.placesService.findOne({ id: userplaceId.placeId })
+    const user = await this.usersService.findOne({ id: userPlaceIndex.userId })
+    const place = await this.placesService.findOne({ id: userPlaceIndex.placeId })
     const newReview = this.reviewRepository.create({ ...content, user, place })
     return await this.reviewRepository.save(newReview)
   }
 
-  async findReview(userplaceId: { userId: number; placeId: number }): Promise<Review> {
+  async findReview(userPlaceIndex: { userId: number; placeId: number }): Promise<Review> {
     return await this.reviewRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.place', 'place')
       .leftJoinAndSelect('review.user', 'user')
-      .where('user.id = :userId AND place.id = :placeId', { userId: userplaceId.userId, placeId: userplaceId.placeId })
+      .where('user.id = :userId AND place.id = :placeId', {
+        userId: userPlaceIndex.userId,
+        placeId: userPlaceIndex.placeId
+      })
       .getOne()
   }
 }

@@ -19,11 +19,16 @@ import { FindPlace } from '../utils/types'
 import { CreatePlaceDto } from './dto/CreatePlace.dto'
 import { UpdatePlaceDto } from './dto/UpdatePlace.dto'
 import { IPlacesService } from './interface/places'
+import { IReviewsService } from '../reviews/interface/reviews'
 
 @Controller(Routes.PLACES)
 @UseGuards(JwtAuthGuard)
 export class PlacesController {
-  constructor(@Inject(Services.PLACES) private readonly placesService: IPlacesService) {}
+  constructor(
+    @Inject(Services.PLACES) private readonly placesService: IPlacesService,
+    @Inject(Services.REVIEWS) private reviewsService: IReviewsService
+  ) {}
+
   @Post()
   async create(@User('sub') userId: number, @Body() body: CreatePlaceDto) {
     return await this.placesService.create(userId, body)
@@ -41,32 +46,32 @@ export class PlacesController {
   async search(@Query('q') q: string) {
     return await this.placesService.search(q)
   }
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const placeId = parseInt(id)
-    if (isNaN(placeId)) {
-      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
-    }
-    return await this.placesService.findOne({ id: placeId })
+
+  @Get(':placeId')
+  async findOne(@Param('placeId', ParseIntPipe) id: number) {
+    return await this.placesService.findOne({ id })
   }
 
-  @Patch(':id')
-  async update(@User('sub') userId: number, @Param('id') id: string, @Body() body: UpdatePlaceDto) {
-    const placeId = parseInt(id)
-    if (isNaN(placeId)) {
-      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
-    }
+  @Get(':placeId/reviews')
+  async getReviews(@Param('placeId', ParseIntPipe) place: number) {
+    return await this.reviewsService.getAll({ place })
+  }
+
+  @Patch(':placeId')
+  async update(
+    @User('sub') userId: number,
+    @Param('placeId', ParseIntPipe) placeId: number,
+    @Body() body: UpdatePlaceDto
+  ) {
     const findPlace: FindPlace = { id: placeId, createdId: userId }
     return await this.placesService.update(findPlace, body)
   }
-  @Get(':id/rating')
-  async getRating(@Param('id') id: string) {
-    const placeId = parseInt(id)
-    if (isNaN(placeId)) {
-      throw new MyHttpException('PlaceId must be a number', HttpStatus.BAD_REQUEST)
-    }
+
+  @Get(':placeId/rating')
+  async getRating(@Param('placeId', ParseIntPipe) placeId: number) {
     return this.placesService.getRating(placeId)
   }
+
   @Get('users/:id')
   async getByUserId(@Param('id') id: string) {
     const userId = parseInt(id)

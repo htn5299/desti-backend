@@ -16,19 +16,14 @@ export class ReviewsController {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
-  @Get()
-  async getReviewsByPlace(@Query() query: ReviewQueryDto) {
-    return await this.reviewsService.getAll(query)
-  }
-
   @Post('places/:id')
   async createReview(
     @User('sub') userId: number,
     @Param('id', ParseIntPipe) placeId: number,
     @Body() content: CreateReviewDto
   ) {
-    const createReview: UserPlaceIndex = { userId, placeId }
-    const review = await this.reviewsService.create(createReview, content)
+    const userPlaceIndex: UserPlaceIndex = { userId, placeId }
+    const review = await this.reviewsService.create(userPlaceIndex, content)
     this.eventEmitter.emit('review.create', review)
     return review
   }

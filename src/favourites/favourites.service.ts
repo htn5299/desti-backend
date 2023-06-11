@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { IFavourites } from './interface/favourites'
 import { Favourite } from '../utils/typeorm/entities/Favourite.entity'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -8,7 +8,6 @@ import { Place } from '../utils/typeorm/entities/Place.entity'
 import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
 import { IPlacesService } from '../places/interface/places'
-import { MyHttpException } from '../utils/myHttpException'
 import { User } from '../utils/typeorm/entities/User.entity'
 
 @Injectable()
