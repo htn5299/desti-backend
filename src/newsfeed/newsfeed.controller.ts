@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param, ParseIntPipe, UseGuards } from '@nestjs/common'
+import { Controller, Get, Inject, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common'
 import { Routes, Services } from '../utils/constranst'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 import { INewsfeed } from './interface/newsfeed'
@@ -14,8 +14,8 @@ export class NewsfeedController {
   ) {}
 
   @Get()
-  async newsfeed(@User('sub') userId: number) {
-    return this.newsfeedService.newsfeed(userId)
+  async newsfeed(@User('sub') userId: number, @Query('page', ParseIntPipe) page: number) {
+    return this.newsfeedService.newsfeed(userId, page)
   }
 
   @Get(':userId')

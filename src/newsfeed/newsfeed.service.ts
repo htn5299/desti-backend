@@ -14,7 +14,7 @@ export class NewsfeedService implements INewsfeed {
     @InjectRepository(Review) private readonly reviewRepository: Repository<Review>
   ) {}
 
-  async newsfeed(userId: number): Promise<Review[]> {
+  async newsfeed(userId: number, page): Promise<Review[]> {
     const friends = await this.friendsServices.list(userId)
     const friendIds = friends.map((friend) => friend.id)
     return this.reviewRepository
@@ -22,6 +22,9 @@ export class NewsfeedService implements INewsfeed {
       .where('reviews.userId IN (:...friendIds)', { friendIds })
       .leftJoinAndSelect('reviews.place', 'place')
       .leftJoinAndSelect('reviews.user', 'user')
+      .leftJoinAndSelect("user.profile", "profile")
+      .take(3)
+      .skip(3 * (page - 1))
       .orderBy('reviews.updatedAt')
       .getMany()
   }

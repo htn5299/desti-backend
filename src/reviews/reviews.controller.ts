@@ -27,4 +27,8 @@ export class ReviewsController {
     this.eventEmitter.emit('review.create', review)
     return review
   }
+  @Get()
+  async getMyReview(@User('sub') userId: number, @Query('place', ParseIntPipe) placeId: number){
+    return await this.reviewsService.findReview({ userId, placeId })
+  }
 }
