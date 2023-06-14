@@ -14,6 +14,7 @@ import { ReviewsModule } from './reviews/reviews.module'
 import { FavouritesModule } from './favourites/favourites.module'
 import { CommentsModule } from './comments/comments.module'
 import { NewsfeedModule } from './newsfeed/newsfeed.module'
+import { PlaceImagesModule } from './place-images/place-images.module'
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { NewsfeedModule } from './newsfeed/newsfeed.module'
     ReviewsModule,
     FavouritesModule,
     CommentsModule,
-    NewsfeedModule
+    NewsfeedModule,
+    PlaceImagesModule
   ],
   controllers: [],
   providers: []

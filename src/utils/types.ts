@@ -44,3 +44,7 @@ export type FavouriteType = {
   here?: boolean
   want?: boolean
 }
+export type UserReviewIndex = {
+  reviewId: number
+  userId: number
+}

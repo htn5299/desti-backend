@@ -22,12 +22,9 @@ export class ProfileService implements IProfile {
     }
     if (updateProfileParams.file) {
       if (findProfile.avatar) {
-        const myUrlS3 = 'https://placewziz-nestjs-uploader.s3.ap-southeast-1.amazonaws.com'
-        const key = findProfile.avatar.substring(myUrlS3.length + 1)
-        await this.imageStorageService.delete(key)
+        await this.imageStorageService.delete(findProfile.avatar)
       }
-      const { url } = await this.imageStorageService.upload(updateProfileParams.file)
-      findProfile.avatar = url
+      findProfile.avatar = await this.imageStorageService.upload(updateProfileParams.file)
     }
     if (updateProfileParams.about) {
       findProfile.about = updateProfileParams.about

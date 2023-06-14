@@ -1,7 +1,6 @@
-import { Controller, Get, Inject, Query, Param, Post, UseGuards, Body, ParseIntPipe } from '@nestjs/common'
+import { Controller, Get, Inject, Param, Post, UseGuards, Body, ParseIntPipe, Delete, Patch } from '@nestjs/common'
 import { IReviewsService } from './interface/reviews'
 import { Routes, Services } from '../utils/constranst'
-import { ReviewQueryDto } from './dto/ReviewQuery.dto'
 import { UserPlaceIndex } from '../utils/types'
 import { CreateReviewDto } from './dto/CreateReview.dto'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
@@ -23,12 +22,39 @@ export class ReviewsController {
     @Body() content: CreateReviewDto
   ) {
     const userPlaceIndex: UserPlaceIndex = { userId, placeId }
-    const review = await this.reviewsService.create(userPlaceIndex, content)
+    const review = await this.reviewsService.createReview(userPlaceIndex, content)
     this.eventEmitter.emit('review.create', review)
     return review
   }
-  @Get()
-  async getMyReview(@User('sub') userId: number, @Query('place', ParseIntPipe) placeId: number){
-    return await this.reviewsService.findReview({ userId, placeId })
+
+  @Get('places/:placeId')
+  async getReviewsByPlaceId(@Param('placeId', ParseIntPipe) placeId: number) {
+    return await this.reviewsService.getReviewsByPlaceId(placeId)
+  }
+
+  @Get('users/:userId')
+  async getReviewsByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.reviewsService.getReviewsByUserId(userId)
+  }
+  @Get('places/:placeId/me')
+  async getMyReviewsByUserPlaceIndex(@User('sub') userId: number, @Param('placeId', ParseIntPipe) placeId: number) {
+    return await this.reviewsService.getMyReviewsByUserPlaceIndex({ userId, placeId })
+  }
+
+  @Patch('places/:placeId/me')
+  async updateMyReviewsByPlaceIndex(
+    @User('sub') userId: number,
+    @Param('placeId', ParseIntPipe) placeId: number,
+    @Body() content: CreateReviewDto
+  ) {
+    const userPlaceIndex: UserPlaceIndex = { userId, placeId }
+    return await this.reviewsService.updateMyReviewsByPlaceIndex(userPlaceIndex, content)
+  }
+  @Delete('places/:placeId/me')
+  async deleteReview(@User('sub') userId: number, @Param('placeId', ParseIntPipe) placeId: number) {
+    const userPlaceIndex: UserPlaceIndex = { userId, placeId }
+    const deleteReview = await this.reviewsService.deleteMyReviewsByPlaceIndex(userPlaceIndex)
+    this.eventEmitter.emit('review.delete', deleteReview)
+    return deleteReview
   }
 }

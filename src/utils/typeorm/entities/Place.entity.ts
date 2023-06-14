@@ -12,6 +12,7 @@ import { StatusCode } from './StatusCode'
 import { User } from './User.entity'
 import { Review } from './Review.entity'
 import { Favourite } from './Favourite.entity'
+import { PlaceImage } from './PlaceImage.entity'
 
 @Entity({ name: 'places' })
 export class Place {
@@ -48,4 +49,7 @@ export class Place {
 
   @OneToMany(() => Favourite, (favourites) => favourites.place)
   favourites: Favourite[]
+
+  @OneToMany(() => PlaceImage, (images) => images.placeId)
+  images: PlaceImage[]
 }
