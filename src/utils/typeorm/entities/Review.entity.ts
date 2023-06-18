@@ -23,7 +23,7 @@ export class Review {
   @Column({ nullable: true, type: 'smallint', unsigned: true })
   rating: number
 
-  @ManyToOne(() => Place, (place) => place.reviews)
+  @ManyToOne(() => Place, (place) => place.reviews, { onDelete: 'CASCADE' })
   @JoinColumn()
   place: Place
 

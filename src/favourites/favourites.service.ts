@@ -20,6 +20,8 @@ export class FavouritesService implements IFavourites {
 
   async getFavourite(userPlaceIndex: UserPlaceIndex): Promise<Favourite> {
     const { userId, placeId } = userPlaceIndex
+    await this.usersService.getUser({ id: userId })
+    await this.placesService.findOne({ id: placeId })
     const existingOne = await this.favouriteRepo.findOne({
       where: {
         userId,
@@ -37,7 +39,7 @@ export class FavouritesService implements IFavourites {
     const existingFavourite = await this.favouriteRepo
       .createQueryBuilder('favourite')
       .where('favourite.userId = :userId', { userId })
-      .where('favourite.placeId = :placeId', { placeId })
+      .andWhere('favourite.placeId = :placeId', { placeId })
       .getOne()
     if (!existingFavourite) {
       const newFavourite = this.favouriteRepo.create({
@@ -64,8 +66,7 @@ export class FavouritesService implements IFavourites {
         boolean: true
       })
       .leftJoinAndSelect('favourite.place', 'place')
-      .select('favourite')
-      .addSelect('place')
+      .leftJoinAndSelect('place.images', 'images')
       .getMany()
     const promise = places.map((place) => {
       return place.place
@@ -81,8 +82,7 @@ export class FavouritesService implements IFavourites {
         boolean: true
       })
       .leftJoinAndSelect('favourite.place', 'place')
-      .select('favourite')
-      .addSelect('place')
+      .leftJoinAndSelect('place.images', 'images')
       .getMany()
     const promise = places.map((place) => {
       return place.place

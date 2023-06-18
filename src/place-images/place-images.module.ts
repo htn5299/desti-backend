@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { PlaceImagesService } from './place-images.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PlaceImage } from '../utils/typeorm/entities/PlaceImage.entity'
 import { ImageStorageModule } from '../image-storage/image-storage.module'
+import { PlacesModule } from '../places/places.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PlaceImage]), ImageStorageModule],
+  imports: [TypeOrmModule.forFeature([PlaceImage]), ImageStorageModule, forwardRef(() => PlacesModule)],
   providers: [
     {
       provide: Services.PLACE_IMAGES,

@@ -6,8 +6,8 @@ export class PlaceImage {
   @PrimaryGeneratedColumn()
   id: number
   @Column()
-  placeId: number
-  @ManyToOne(() => Place, (place) => place.images)
+  placeId: string
+  @ManyToOne(() => Place, (place) => place.images, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'placeId' })
   place: Place
   @Column()

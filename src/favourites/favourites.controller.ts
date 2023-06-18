@@ -30,7 +30,7 @@ export class FavouritesController {
   }
 
   @Get('users/:userId/want')
-  async getWantPlacesbyUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getWantPlacesByUserId(@Param('userId', ParseIntPipe) userId: number) {
     return await this.favouritesService.wantPlaces(userId)
   }
 

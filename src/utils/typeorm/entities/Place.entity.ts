@@ -25,6 +25,9 @@ export class Place {
   @Column()
   description: string
 
+  @Column()
+  address: string
+
   @Column({ type: 'float' })
   latitude: number
 
@@ -50,6 +53,6 @@ export class Place {
   @OneToMany(() => Favourite, (favourites) => favourites.place)
   favourites: Favourite[]
 
-  @OneToMany(() => PlaceImage, (images) => images.placeId)
+  @OneToMany(() => PlaceImage, (images) => images.place)
   images: PlaceImage[]
 }
