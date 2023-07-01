@@ -6,4 +6,18 @@ import { Review } from './entities/Review.entity'
 import { User } from './entities/User.entity'
 import { Favourite } from './entities/Favourite.entity'
 import { PlaceImage } from './entities/PlaceImage.entity'
-export const entities = [User, Profile, RefreshToken, Friend, Place, Review, Favourite, PlaceImage]
+import { NotificationEntity } from './entities/Notification.entity'
+import { NotificationRecipientEntity } from './entities/NotificationRecipient.entity'
+
+export const entities = [
+  User,
+  Profile,
+  RefreshToken,
+  Friend,
+  Place,
+  Review,
+  Favourite,
+  PlaceImage,
+  NotificationEntity,
+  NotificationRecipientEntity
+]

@@ -9,24 +9,38 @@ import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
 import { IPlacesService } from '../places/interface/places'
 import { MyHttpException } from '../utils/myHttpException'
+import { IFriendsService } from '../friends/interface/friend'
 
 @Injectable()
 export class ReviewsService implements IReviewsService {
   constructor(
     @InjectRepository(Review) private readonly reviewRepository: Repository<Review>,
+    @Inject(Services.FRIENDS) private readonly friendsService: IFriendsService,
     @Inject(Services.USERS) private readonly usersService: IUserService,
     @Inject(Services.PLACES) private readonly placesService: IPlacesService
   ) {}
   async createReview(userPlaceIndex: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
     const myReview = await this.getMyReviewsByUserPlaceIndex(userPlaceIndex)
     if (myReview) {
-      return await this.reviewRepository.save({ ...myReview, ...content })
+      throw new MyHttpException('You have reviewed this place', HttpStatus.BAD_REQUEST)
     }
     const user = await this.usersService.findOne({ id: userPlaceIndex.userId })
     const place = await this.placesService.findOne({ id: userPlaceIndex.placeId })
-    const newReview = this.reviewRepository.create({ ...content, user, place })
-    return await this.reviewRepository.save(newReview)
+    const createReview = this.reviewRepository.create({ ...content, user, place })
+
+    return await this.reviewRepository.save(createReview)
   }
+  async getReviewById(reviewId: number): Promise<Review> {
+    return await this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.place', 'place')
+      .leftJoinAndSelect('review.user', 'user')
+      .where('review.id = :reviewId', {
+        reviewId
+      })
+      .getOne()
+  }
+
   async getReviewsByPlaceId(placeId: number): Promise<Review[]> {
     return await this.reviewRepository
       .createQueryBuilder('review')
@@ -88,5 +102,23 @@ export class ReviewsService implements IReviewsService {
       .orderBy('COUNT(*)', 'DESC')
       .limit(top)
       .getRawMany()
+  }
+
+  async newsfeed(userId: number, page): Promise<Review[]> {
+    const friends = await this.friendsService.list(userId)
+    const friendIds = friends.map((friend) => friend.id)
+
+    return friendIds.length
+      ? await this.reviewRepository
+          .createQueryBuilder('reviews')
+          .where('reviews.userId IN (:...friendIds)', { friendIds: friendIds }) // Remove spread operator
+          .leftJoinAndSelect('reviews.place', 'place')
+          .leftJoinAndSelect('reviews.user', 'user')
+          .leftJoinAndSelect('user.profile', 'profile')
+          .take(3)
+          .skip(3 * (page - 1))
+          .orderBy('reviews.updatedAt', 'DESC')
+          .getMany()
+      : []
   }
 }

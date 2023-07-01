@@ -1,4 +1,5 @@
 import { Express } from 'express'
+import { Action, Services } from './constranst'
 
 export type CreateUserDetails = {
   email: string
@@ -27,10 +28,6 @@ export type Payload = {
   email: string
 }
 
-export type UploadImageParams = {
-  key: string
-  file: Express.MulterS3.File
-}
 export type UserPlaceIndex = {
   userId: number
   placeId: number
@@ -44,7 +41,40 @@ export type FavouriteType = {
   here?: boolean
   want?: boolean
 }
-export type UserReviewIndex = {
-  reviewId: number
-  userId: number
+export type NotificationType = {
+  id: number
+  actor: number
+  entity: number
+  action: Action
+  service: Services
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type NotificationRecipientType = {
+  id: number
+  recipient: number
+  notification: number
+  readAt: Date
+  createdAt: Date
+  updatedAt: Date
+}
+export type NotificationRecipientResponse = {
+  id: number
+  readAt: null | Date
+  createdAt: Date
+  updatedAt: Date
+  notification: {
+    id: number
+    entity: number
+    action: Action
+    service: Services
+    createdAt: Date
+    updatedAt: Date
+    actor: {
+      id: number
+      email: string
+      name: string
+    }
+  }
 }

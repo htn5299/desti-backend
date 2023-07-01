@@ -9,7 +9,8 @@ import {
   Patch,
   Body,
   UseInterceptors,
-  UploadedFile
+  UploadedFile,
+  ParseIntPipe
 } from '@nestjs/common'
 import { Routes, Services } from '../../utils/constranst'
 import { IUserService } from '../interfaces/user'
@@ -65,7 +66,7 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getUser(@Param('id') id: number) {
+  async getUser(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUser({ id })
   }
 }

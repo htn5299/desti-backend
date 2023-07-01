@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import configuration from './utils/config/configuration'
 import { entities } from './utils/typeorm'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
@@ -15,6 +15,7 @@ import { FavouritesModule } from './favourites/favourites.module'
 import { CommentsModule } from './comments/comments.module'
 import { NewsfeedModule } from './newsfeed/newsfeed.module'
 import { PlaceImagesModule } from './place-images/place-images.module'
+import { NotificationModule } from './notification/notification.module'
 
 @Module({
   imports: [
@@ -24,16 +25,10 @@ import { PlaceImagesModule } from './place-images/place-images.module'
       load: [configuration],
       isGlobal: true
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      database: 'postgres',
-      host: process.env.POSTGRES_DB_HOST,
-      port: parseInt(process.env.POSTGRES_DB_PORT),
-      username: process.env.POSTGRES_DB_USERNAME,
-      password: process.env.POSTGRES_DB_PASSWORD,
-      synchronize: true,
-      entities,
-      logging: false
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => configService.get('CONTAINER'),
+      inject: [ConfigService]
     }),
     UsersModule,
     AuthModule,
@@ -45,7 +40,8 @@ import { PlaceImagesModule } from './place-images/place-images.module'
     FavouritesModule,
     CommentsModule,
     NewsfeedModule,
-    PlaceImagesModule
+    PlaceImagesModule,
+    NotificationModule
   ],
   controllers: [],
   providers: []

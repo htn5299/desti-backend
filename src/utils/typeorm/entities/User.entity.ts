@@ -33,6 +33,7 @@ export class User {
 
   @OneToMany(() => Place, (place) => place.createdBy)
   places: Place[]
+
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[]
 

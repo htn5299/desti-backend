@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Place } from './Place.entity'
 
-@Entity({ name: 'placeimages' })
+@Entity({ name: 'place_images' })
 export class PlaceImage {
   @PrimaryGeneratedColumn()
   id: number
