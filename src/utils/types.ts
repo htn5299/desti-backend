@@ -59,6 +59,7 @@ export type NotificationRecipientType = {
   createdAt: Date
   updatedAt: Date
 }
+
 export type NotificationRecipientResponse = {
   id: number
   readAt: null | Date
@@ -77,4 +78,18 @@ export type NotificationRecipientResponse = {
       name: string
     }
   }
+}
+
+export type LikeType = {
+  id: number
+  reviewId: number
+  userId: number
+  createdAt: Date
+}
+export type CommentType = {
+  id: number
+  reviewId: number
+  userId: number
+  comment: string
+  createdAt: Date
 }

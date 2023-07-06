@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { IFavourites } from './interface/favourites'
 import { Favourite } from '../utils/typeorm/entities/Favourite.entity'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -9,6 +9,7 @@ import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
 import { IPlacesService } from '../places/interface/places'
 import { User } from '../utils/typeorm/entities/User.entity'
+import { MyHttpException } from '../utils/myHttpException'
 
 @Injectable()
 export class FavouritesService implements IFavourites {
@@ -68,6 +69,9 @@ export class FavouritesService implements IFavourites {
       .leftJoinAndSelect('favourite.place', 'place')
       .leftJoinAndSelect('place.images', 'images')
       .getMany()
+    if (!places.length) {
+      throw new MyHttpException('no place been here', HttpStatus.BAD_REQUEST)
+    }
     const promise = places.map((place) => {
       return place.place
     })
@@ -84,6 +88,9 @@ export class FavouritesService implements IFavourites {
       .leftJoinAndSelect('favourite.place', 'place')
       .leftJoinAndSelect('place.images', 'images')
       .getMany()
+    if (!places.length) {
+      throw new MyHttpException('no place been want', HttpStatus.BAD_REQUEST)
+    }
     const promise = places.map((place) => {
       return place.place
     })

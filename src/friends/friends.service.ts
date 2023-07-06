@@ -86,6 +86,7 @@ export class FriendsService implements IFriendsService {
   }
 
   async list(userId: number): Promise<User[]> {
+    const user = await this.userService.findOne({ id: userId })
     const query = await this.friendRepository
       .createQueryBuilder('friends')
       .leftJoinAndSelect('friends.requester', 'user as requester')
@@ -95,7 +96,6 @@ export class FriendsService implements IFriendsService {
       })
       .andWhere('friends.status = :status', { status: StatusCode.ACCEPTED })
       .getMany()
-    const user = await this.userService.findOne({ id: userId })
     return await Promise.all(
       query.map(async (friend) => {
         return friend.receiver.id === user.id ? friend.requester : friend.receiver
@@ -111,5 +111,21 @@ export class FriendsService implements IFriendsService {
       .where('requesterId = :userId  AND receiverId = :friendId', { userId, friendId })
       .orWhere('requesterId = :friendId AND receiverId = :userId', { friendId, userId })
       .execute()
+  }
+  async getOne(id: number, userId: number): Promise<User> {
+    const friend = await this.friendRepository
+      .createQueryBuilder('friends')
+      .leftJoinAndSelect('friends.requester', 'user as requester')
+      .leftJoinAndSelect('friends.receiver', 'user as receiver')
+      .where('friends.id = :id', { id })
+      .getOne()
+    if (!friend) {
+      throw new MyHttpException('friend not found', HttpStatus.BAD_REQUEST)
+    }
+    const user = await this.userService.findOne({ id: userId })
+    if (!(user.id === friend.requester.id || user.id === friend.receiver.id)) {
+      throw new MyHttpException('who are you?', HttpStatus.BAD_REQUEST)
+    }
+    return friend.receiver.id === user.id ? friend.requester : friend.receiver
   }
 }

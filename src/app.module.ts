@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import configuration from './utils/config/configuration'
-import { entities } from './utils/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from './users/users.module'
@@ -16,6 +15,7 @@ import { CommentsModule } from './comments/comments.module'
 import { NewsfeedModule } from './newsfeed/newsfeed.module'
 import { PlaceImagesModule } from './place-images/place-images.module'
 import { NotificationModule } from './notification/notification.module'
+import { LikesModule } from './likes/likes.module'
 
 @Module({
   imports: [
@@ -41,7 +41,8 @@ import { NotificationModule } from './notification/notification.module'
     CommentsModule,
     NewsfeedModule,
     PlaceImagesModule,
-    NotificationModule
+    NotificationModule,
+    LikesModule
   ],
   controllers: [],
   providers: []

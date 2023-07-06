@@ -8,6 +8,8 @@ import { Favourite } from './entities/Favourite.entity'
 import { PlaceImage } from './entities/PlaceImage.entity'
 import { NotificationEntity } from './entities/Notification.entity'
 import { NotificationRecipientEntity } from './entities/NotificationRecipient.entity'
+import { LikeEntity } from './entities/Like.entity'
+import { CommentEntity } from './entities/Comment.entity'
 
 export const entities = [
   User,
@@ -19,5 +21,7 @@ export const entities = [
   Favourite,
   PlaceImage,
   NotificationEntity,
-  NotificationRecipientEntity
+  NotificationRecipientEntity,
+  LikeEntity,
+  CommentEntity
 ]

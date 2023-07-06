@@ -6,5 +6,6 @@ export interface IFriendsService {
   request(userId: number, friendId: number): Promise<Friend>
   response(userId: number, friendId: number, updateFriendDto: UpdateFriendDto): Promise<Friend>
   list(userId: number): Promise<User[]>
+  getOne(id: number, userId: number): Promise<User>
   delete(userId: number, friendId: number): Promise<void>
 }
