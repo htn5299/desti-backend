@@ -85,6 +85,7 @@ export type LikeType = {
   reviewId: number
   userId: number
   createdAt: Date
+  isLiked: boolean
 }
 export type CommentType = {
   id: number

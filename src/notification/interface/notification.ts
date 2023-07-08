@@ -10,7 +10,7 @@ export interface INotification {
   getNotificationRecipientById(notificationRecipient: {
     notificationRecipientId: number
   }): Promise<NotificationRecipientEntity>
-  // deleteNotification(): Promise<any>
+  deleteNotification(notification: { entity: number }): Promise<any>
   // getAllNotification(): Promise<any>
   getAllNotificationByUser(user: { userId: number }): Promise<NotificationRecipientEntity[]>
 }

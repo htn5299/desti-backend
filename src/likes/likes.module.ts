@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { LikeEntity } from '../utils/typeorm/entities/Like.entity'
 import { ReviewsModule } from '../reviews/reviews.module'
 import { UsersModule } from '../users/users.module'
-import { LikesController } from './likes.controller';
+import { LikesController } from './likes.controller'
 
 @Module({
   imports: [TypeOrmModule.forFeature([LikeEntity]), forwardRef(() => UsersModule), forwardRef(() => ReviewsModule)],

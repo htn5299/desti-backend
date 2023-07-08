@@ -18,7 +18,6 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { Review } from '../utils/typeorm/entities/Review.entity'
 import { INotification } from '../notification/interface/notification'
 import { IFriendsService } from '../friends/interface/friend'
-import { NotificationRecipientResponse, NotificationRecipientType, NotificationType } from '../utils/types'
 import { ConfigService } from '@nestjs/config'
 import configuration from '../utils/config/configuration'
 

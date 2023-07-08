@@ -1,8 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common'
 import { Routes, Services } from '../utils/constranst'
-import { ILikes } from '../likes/interface/likes'
 import { User } from '../users/utils/user.decorator'
-import { CreateLikeDto } from '../likes/dto/CreateLike.dto'
 import { IComments } from './interface/comments'
 import { CreateCommentDto } from './dto/CreateComment.dto'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'

@@ -52,4 +52,13 @@ export class NotificationService implements INotification {
       .orderBy('nr.createdAt', 'DESC')
       .getOne()
   }
+  async deleteNotification(notification: { entity: number }): Promise<any> {
+    const { entity } = notification
+    return await this.notificationRepository
+      .createQueryBuilder('notifications')
+      .delete()
+      .from(NotificationEntity)
+      .where('entity = :entity', { entity })
+      .execute()
+  }
 }

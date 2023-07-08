@@ -99,6 +99,7 @@ export class ReviewsController {
     const userPlaceIndex: UserPlaceIndex = { userId, placeId }
     const deleteReview = await this.reviewsService.deleteMyReviewsByPlaceIndex(userPlaceIndex)
     this.eventEmitter.emit(ServerEvents.REVIEW_DELETE, deleteReview)
+    await this.notificationsService.deleteNotification({ entity: deleteReview.id })
     return deleteReview
   }
   @Get('places/:placeId')

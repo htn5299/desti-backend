@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Review } from './Review.entity'
 import { User } from './User.entity'
 
@@ -14,6 +14,9 @@ export class LikeEntity {
   @ManyToOne(() => User, (user) => user.likes, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User
+
+  @Column({ default: false })
+  isLiked: boolean
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date

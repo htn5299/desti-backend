@@ -41,6 +41,7 @@ export class CommentsService implements IComments {
         .where('comments.review = :reviewId', { reviewId })
         .leftJoinAndSelect('comments.review', 'review')
         .leftJoinAndSelect('comments.user', 'user')
+        .leftJoinAndSelect('user.profile', 'profile')
         .getMany()
     } else if (userId) {
       return await this.commentRepo
@@ -48,6 +49,7 @@ export class CommentsService implements IComments {
         .where('comments.userId = :userId', { userId })
         .leftJoinAndSelect('comments.review', 'review')
         .leftJoinAndSelect('comments.user', 'user')
+        .leftJoinAndSelect('user.profile', 'profile')
         .getMany()
     }
     return
@@ -72,6 +74,7 @@ export class CommentsService implements IComments {
         .where('comments.id = :id', { id })
         .leftJoinAndSelect('comments.user', 'user')
         .leftJoinAndSelect('comments.review', 'review')
+        .leftJoinAndSelect('user.profile', 'profile')
         .getOne()
       if (!existingComment) {
         throw new MyHttpException('comment not found', HttpStatus.BAD_REQUEST)
@@ -80,10 +83,11 @@ export class CommentsService implements IComments {
     } else if (reviewId && userId) {
       const existingComment = await this.commentRepo
         .createQueryBuilder('comments')
-        .where('comments.review = :userId', { userId })
-        .andWhere('comments.review = :reviewId', { reviewId })
+        .where('comments.userId = :userId', { userId })
+        .andWhere('comments.reviewId = :reviewId', { reviewId })
         .leftJoinAndSelect('comments.user', 'user')
         .leftJoinAndSelect('comments.review', 'review')
+        .leftJoinAndSelect('user.profile', 'profile')
         .getOne()
       if (!existingComment) {
         throw new MyHttpException('comment not found', HttpStatus.BAD_REQUEST)

@@ -58,10 +58,12 @@ export class ReviewsService implements IReviewsService {
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.place', 'place')
       .leftJoinAndSelect('review.user', 'user')
+      .leftJoinAndSelect('user.profile', 'profile')
       .select('review')
       .where('user.id = :id', { id: userId })
       .addSelect('user')
       .addSelect('place')
+      .addSelect('profile')
       .orderBy('review.updatedAt', 'DESC')
       .getMany()
   }

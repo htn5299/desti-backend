@@ -17,11 +17,17 @@ export class LikesService implements ILikes {
     @Inject(Services.REVIEWS) private reviewService: IReviewsService
   ) {}
 
-  async create(like: Pick<LikeType, 'userId' | 'reviewId'>): Promise<LikeEntity> {
-    const { userId, reviewId } = like
-    const existingLike = await this.getOne(like)
+  async setLike(like: Pick<LikeType, 'userId' | 'reviewId' | 'isLiked'>): Promise<LikeEntity> {
+    const { userId, reviewId, isLiked } = like
+    const existingLike = await this.likeRepo
+      .createQueryBuilder('likes')
+      .where('likes.userId = :userId', { userId })
+      .andWhere('likes.reviewId = :reviewId', { reviewId })
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('likes.review', 'review')
+      .getOne()
     if (existingLike) {
-      throw new MyHttpException('Liked', HttpStatus.BAD_REQUEST)
+      return await this.likeRepo.save({ ...existingLike, isLiked })
     }
     const user = await this.userService.getUser({ id: userId })
     if (!user) {
@@ -31,7 +37,7 @@ export class LikesService implements ILikes {
     if (!review) {
       throw new MyHttpException('review not found', HttpStatus.BAD_REQUEST)
     }
-    const newLike = this.likeRepo.create({ user, review })
+    const newLike = this.likeRepo.create({ user, review, isLiked })
     return await this.likeRepo.save(newLike)
   }
 
@@ -41,6 +47,7 @@ export class LikesService implements ILikes {
       const existingLike = await this.likeRepo
         .createQueryBuilder('likes')
         .where('likes.id = :id', { id })
+        // .andWhere('likes.isLiked = true')
         .leftJoinAndSelect('likes.user', 'user')
         .leftJoinAndSelect('likes.review', 'review')
         .getOne()
@@ -51,8 +58,9 @@ export class LikesService implements ILikes {
     } else if (reviewId && userId) {
       const existingLike = await this.likeRepo
         .createQueryBuilder('likes')
-        .where('likes.review = :userId', { userId })
-        .andWhere('likes.review = :reviewId', { reviewId })
+        .where('likes.userId = :userId', { userId })
+        .andWhere('likes.reviewId = :reviewId', { reviewId })
+        // .andWhere('likes.isLiked = true')
         .leftJoinAndSelect('likes.user', 'user')
         .leftJoinAndSelect('likes.review', 'review')
         .getOne()
@@ -85,18 +93,5 @@ export class LikesService implements ILikes {
         .getMany()
     }
     return
-  }
-
-  async delete(like: Pick<LikeType, 'id' | 'userId'>): Promise<LikeEntity> {
-    const { id, userId } = like
-    const myLike = await this.getOne({ id })
-    if (!myLike) {
-      throw new MyHttpException('like not found', HttpStatus.BAD_REQUEST)
-    }
-    if (myLike.user.id !== userId) {
-      throw new MyHttpException('Not yours', HttpStatus.BAD_REQUEST)
-    }
-    await this.likeRepo.delete({ id: myLike.id })
-    return myLike
   }
 }
