@@ -5,6 +5,8 @@ import { Friend } from './Friend.entity'
 import { Place } from './Place.entity'
 import { Review } from './Review.entity'
 import { Favourite } from './Favourite.entity'
+import { LikeEntity } from './Like.entity'
+import { CommentEntity } from './Comment.entity'
 
 @Entity({ name: 'users' })
 export class User {
@@ -33,8 +35,15 @@ export class User {
 
   @OneToMany(() => Place, (place) => place.createdBy)
   places: Place[]
+
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[]
+
+  @OneToMany(() => LikeEntity, (likeEntity) => likeEntity.user)
+  likes: LikeEntity[]
+
+  @OneToMany(() => CommentEntity, (commentEntity) => commentEntity.user)
+  comments: CommentEntity[]
 
   @OneToMany(() => Favourite, (favourites) => favourites.user)
   favourites: Favourite[]

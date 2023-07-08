@@ -10,6 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CreatePlaceDto } from './dto/CreatePlace.dto'
 import { UpdatePlaceDto } from './dto/UpdatePlace.dto'
 import { IPlacesService } from './interface/places'
+
 @Injectable()
 export class PlacesService implements IPlacesService {
   constructor(
@@ -17,10 +18,10 @@ export class PlacesService implements IPlacesService {
     @InjectRepository(Place) private readonly placeRepository: Repository<Place>,
     private readonly eventEmmiter: EventEmitter2
   ) {}
+
   async create(userId: number, body: CreatePlaceDto): Promise<Place> {
     const user = await this.userService.findOne({ id: userId })
-    const { name, description, latitude, longitude } = body
-    const newPlace = this.placeRepository.create({ name, description, latitude, longitude, createdBy: user })
+    const newPlace = this.placeRepository.create({ ...body, createdBy: user })
     const create = await this.placeRepository.save(newPlace)
     this.eventEmmiter.emit('place.create', create)
     return create
@@ -30,6 +31,7 @@ export class PlacesService implements IPlacesService {
     return await this.placeRepository
       .createQueryBuilder('place')
       .leftJoinAndSelect('place.createdBy', 'user')
+      .leftJoinAndSelect('place.images', 'images')
       .take(3)
       .skip(3 * (page - 1))
       .getMany()
@@ -39,6 +41,7 @@ export class PlacesService implements IPlacesService {
     const place = await this.placeRepository
       .createQueryBuilder('place')
       .leftJoinAndSelect('place.createdBy', 'user')
+      .leftJoinAndSelect('place.images', 'images')
       // .leftJoinAndSelect('place.reviews', 'review')
       .where('place.id = :id', { id: findPlace.id })
       .getOne()
@@ -58,6 +61,7 @@ export class PlacesService implements IPlacesService {
     const createdBy = await this.userService.findOne({ id: userId })
     return await this.placeRepository.find({ where: { createdBy } })
   }
+
   async search(query: string): Promise<Place[]> {
     if (!query) {
       throw new MyHttpException('No have any query', HttpStatus.BAD_REQUEST)
@@ -67,15 +71,18 @@ export class PlacesService implements IPlacesService {
       .createQueryBuilder('place')
       .where(`unaccent(place.name) ILIKE unaccent(:query)`, { query: `%${modifiedQuery}%` })
       .orWhere(`unaccent(place.description) ILIKE unaccent(:query)`, { query: `%${modifiedQuery}%` })
+      .leftJoinAndSelect('place.images', 'images')
       .limit(10)
       .getMany()
   }
+
   async getRating(placeId: number): Promise<{ rating: number }> {
     return await this.placeRepository
       .createQueryBuilder('place')
       .leftJoinAndSelect('place.reviews', 'review')
+      .leftJoinAndSelect('place.images', 'images')
       .where('place.id = :id', { id: placeId })
-      .select('AVG(review.rating)', 'rating')
+      .select('ROUND(AVG(review.rating),1)', 'rating')
       .groupBy('place.id')
       .getRawOne()
   }

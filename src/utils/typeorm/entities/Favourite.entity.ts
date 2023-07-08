@@ -14,7 +14,7 @@ export class Favourite {
   @JoinColumn()
   user: User
 
-  @ManyToOne(() => Place, (place) => place.favourites)
+  @ManyToOne(() => Place, (place) => place.favourites, { onDelete: 'CASCADE' })
   @JoinColumn()
   place: Place
 

@@ -8,8 +8,8 @@ import { Place } from '../utils/typeorm/entities/Place.entity'
 import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
 import { IPlacesService } from '../places/interface/places'
-import { MyHttpException } from '../utils/myHttpException'
 import { User } from '../utils/typeorm/entities/User.entity'
+import { MyHttpException } from '../utils/myHttpException'
 
 @Injectable()
 export class FavouritesService implements IFavourites {
@@ -21,6 +21,8 @@ export class FavouritesService implements IFavourites {
 
   async getFavourite(userPlaceIndex: UserPlaceIndex): Promise<Favourite> {
     const { userId, placeId } = userPlaceIndex
+    await this.usersService.getUser({ id: userId })
+    await this.placesService.findOne({ id: placeId })
     const existingOne = await this.favouriteRepo.findOne({
       where: {
         userId,
@@ -38,7 +40,7 @@ export class FavouritesService implements IFavourites {
     const existingFavourite = await this.favouriteRepo
       .createQueryBuilder('favourite')
       .where('favourite.userId = :userId', { userId })
-      .where('favourite.placeId = :placeId', { placeId })
+      .andWhere('favourite.placeId = :placeId', { placeId })
       .getOne()
     if (!existingFavourite) {
       const newFavourite = this.favouriteRepo.create({
@@ -65,9 +67,11 @@ export class FavouritesService implements IFavourites {
         boolean: true
       })
       .leftJoinAndSelect('favourite.place', 'place')
-      .select('favourite')
-      .addSelect('place')
+      .leftJoinAndSelect('place.images', 'images')
       .getMany()
+    if (!places.length) {
+      throw new MyHttpException('no place been here', HttpStatus.BAD_REQUEST)
+    }
     const promise = places.map((place) => {
       return place.place
     })
@@ -82,9 +86,11 @@ export class FavouritesService implements IFavourites {
         boolean: true
       })
       .leftJoinAndSelect('favourite.place', 'place')
-      .select('favourite')
-      .addSelect('place')
+      .leftJoinAndSelect('place.images', 'images')
       .getMany()
+    if (!places.length) {
+      throw new MyHttpException('no place been want', HttpStatus.BAD_REQUEST)
+    }
     const promise = places.map((place) => {
       return place.place
     })

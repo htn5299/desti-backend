@@ -8,6 +8,9 @@ export class UpdatePlaceDto {
   description: string
 
   @IsOptional()
+  address: string
+
+  @IsOptional()
   @IsLatitude()
   latitude: number
 

@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import configuration from './utils/config/configuration'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from './users/users.module'
-import configuration from './utils/config/configuration'
-import { entities } from './utils/typeorm'
 import { AuthModule } from './auth/auth.module'
 import { PlacesModule } from './places/places.module'
 import { EventsModule } from './events/events.module'
@@ -12,6 +11,11 @@ import { FriendsModule } from './friends/friends.module'
 import { ImageStorageModule } from './image-storage/image-storage.module'
 import { ReviewsModule } from './reviews/reviews.module'
 import { FavouritesModule } from './favourites/favourites.module'
+import { CommentsModule } from './comments/comments.module'
+import { NewsfeedModule } from './newsfeed/newsfeed.module'
+import { PlaceImagesModule } from './place-images/place-images.module'
+import { NotificationModule } from './notification/notification.module'
+import { LikesModule } from './likes/likes.module'
 
 @Module({
   imports: [
@@ -21,16 +25,10 @@ import { FavouritesModule } from './favourites/favourites.module'
       load: [configuration],
       isGlobal: true
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      database: 'postgres',
-      host: process.env.POSTGRES_DB_HOST,
-      port: parseInt(process.env.POSTGRES_DB_PORT),
-      username: process.env.POSTGRES_DB_USERNAME,
-      password: process.env.POSTGRES_DB_PASSWORD,
-      synchronize: true,
-      entities,
-      logging: false
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => configService.get('CONTAINER'),
+      inject: [ConfigService]
     }),
     UsersModule,
     AuthModule,
@@ -39,7 +37,12 @@ import { FavouritesModule } from './favourites/favourites.module'
     EventsModule,
     ImageStorageModule,
     ReviewsModule,
-    FavouritesModule
+    FavouritesModule,
+    CommentsModule,
+    NewsfeedModule,
+    PlaceImagesModule,
+    NotificationModule,
+    LikesModule
   ],
   controllers: [],
   providers: []

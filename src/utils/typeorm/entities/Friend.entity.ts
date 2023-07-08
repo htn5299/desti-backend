@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 import { User } from './User.entity'
-import { StatusCode } from './StatusCode'
+import { StatusCode } from '../../constranst'
 
 @Entity({ name: 'friends' })
 export class Friend {

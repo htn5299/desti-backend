@@ -3,11 +3,13 @@ import { PlacesController } from './places.controller'
 import { PlacesService } from './places.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Place } from '../utils/typeorm/entities/Place.entity'
 import { UsersModule } from '../users/users.module'
+import { ReviewsModule } from '../reviews/reviews.module'
+import { Place } from '../utils/typeorm/entities/Place.entity'
+import { PlaceImagesModule } from '../place-images/place-images.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Place]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Place]), UsersModule, ReviewsModule, PlaceImagesModule],
   controllers: [PlacesController],
   providers: [
     {

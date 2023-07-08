@@ -8,6 +8,9 @@ export class CreatePlaceDto {
   description: string
 
   @IsNotEmpty()
+  address: string
+
+  @IsNotEmpty()
   @IsLatitude()
   latitude: number
 

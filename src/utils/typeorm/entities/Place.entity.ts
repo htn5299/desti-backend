@@ -8,10 +8,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { StatusCode } from './StatusCode'
 import { User } from './User.entity'
 import { Review } from './Review.entity'
 import { Favourite } from './Favourite.entity'
+import { PlaceImage } from './PlaceImage.entity'
+import { StatusCode } from '../../constranst'
 
 @Entity({ name: 'places' })
 export class Place {
@@ -23,6 +24,9 @@ export class Place {
 
   @Column()
   description: string
+
+  @Column()
+  address: string
 
   @Column({ type: 'float' })
   latitude: number
@@ -48,4 +52,7 @@ export class Place {
 
   @OneToMany(() => Favourite, (favourites) => favourites.place)
   favourites: Favourite[]
+
+  @OneToMany(() => PlaceImage, (images) => images.place)
+  images: PlaceImage[]
 }

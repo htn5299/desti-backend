@@ -12,6 +12,6 @@ export class Profile {
   @Column({ nullable: true })
   avatar?: string
 
-  @OneToOne(() => User, (user) => user.profile)
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
   user: User
 }

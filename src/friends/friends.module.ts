@@ -5,11 +5,18 @@ import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { UsersModule } from '../users/users.module'
 import { FriendsController } from './friends.controller'
 import { FriendsService } from './friends.service'
+import { NotificationModule } from '../notification/notification.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Friend]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Friend]), UsersModule, NotificationModule],
   controllers: [FriendsController],
   providers: [
+    {
+      provide: Services.FRIENDS,
+      useClass: FriendsService
+    }
+  ],
+  exports: [
     {
       provide: Services.FRIENDS,
       useClass: FriendsService

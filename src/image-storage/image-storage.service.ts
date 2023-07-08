@@ -15,7 +15,8 @@ export class ImageStorageService implements IImageStorageService {
     }
   })
   constructor(private configService: ConfigService) {}
-  async upload(file: Express.MulterS3.File) {
+
+  async upload(file: Express.MulterS3.File): Promise<string> {
     try {
       const objectId = generateUUIDV4()
       const arr_name = file.originalname.split('.')
@@ -29,10 +30,7 @@ export class ImageStorageService implements IImageStorageService {
         ContentType: file.mimetype,
         Body: file.buffer
       })
-      const url = `https://${this.configService.getOrThrow('AWS_BUCKET_NAME')}.s3.${this.configService.getOrThrow(
-        'AWS_BUCKET_REGION'
-      )}.amazonaws.com/${key}`
-      return { url }
+      return key
     } catch (error) {
       throw new MyHttpException('Unable to upload file to S3', HttpStatus.BAD_REQUEST)
     }
@@ -47,5 +45,9 @@ export class ImageStorageService implements IImageStorageService {
     } catch (error) {
       throw new MyHttpException('Unable to delete file from S3', HttpStatus.BAD_REQUEST)
     }
+  }
+  async uploads(files: Express.MulterS3.File[]): Promise<string[]> {
+    const promise = files.map(async (file) => await this.upload(file))
+    return Promise.all(promise)
   }
 }
