@@ -48,3 +48,8 @@ export enum StatusCode {
   ACCEPTED = 'ACCEPTED',
   DECLINED = 'DECLINED'
 }
+export enum CheckedFriend {
+  YOU = 'you',
+  FRIEND = `friend`,
+  NOT_FRIEND = 'not friend'
+}

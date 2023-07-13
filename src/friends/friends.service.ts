@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { Repository } from 'typeorm'
-import { Services, StatusCode } from '../utils/constranst'
+import { CheckedFriend, Services, StatusCode } from '../utils/constranst'
 import { IUserService } from '../users/interfaces/user'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
@@ -34,6 +34,9 @@ export class FriendsService implements IFriendsService {
   }
 
   async request(userId: number, friendId: number): Promise<Friend> {
+    if (userId === friendId) {
+      throw new MyHttpException('Can not request yourself', HttpStatus.BAD_REQUEST)
+    }
     const requester = await this.userService.findOne({ id: userId })
     const receiver = await this.userService.findOne({ id: friendId })
     if (requester === receiver) {
@@ -47,14 +50,13 @@ export class FriendsService implements IFriendsService {
       case StatusCode.ACCEPTED:
         throw new MyHttpException('This person is already a friend', HttpStatus.BAD_REQUEST)
       case StatusCode.PENDING:
-        throw new MyHttpException('You have sent a friend request', HttpStatus.BAD_REQUEST)
+        if (query.requester.id === userId) {
+          throw new MyHttpException('You have sent a friend request', HttpStatus.BAD_REQUEST)
+        }
+        return await this.response(userId, friendId, { status: StatusCode.ACCEPTED })
       case StatusCode.DECLINED:
-        return await this.friendRepository.save({
-          ...query,
-          requester,
-          receiver,
-          status: StatusCode.PENDING
-        })
+        await this.delete(userId, friendId)
+        break
       default:
     }
     const newFriend = this.friendRepository.create({
@@ -127,5 +129,21 @@ export class FriendsService implements IFriendsService {
       throw new MyHttpException('who are you?', HttpStatus.BAD_REQUEST)
     }
     return friend.receiver.id === user.id ? friend.requester : friend.receiver
+  }
+  async check(userId: number, friendId: number): Promise<Friend> {
+    if (userId === friendId) {
+      throw new MyHttpException('this is you', HttpStatus.BAD_REQUEST)
+    }
+    const query = await this.friendRepository
+      .createQueryBuilder('friends')
+      .leftJoinAndSelect('friends.requester', 'user as requester')
+      .leftJoinAndSelect('friends.receiver', 'user as receiver')
+      .where('friends.requesterId = :userId  AND friends.receiverId = :friendId', { userId, friendId })
+      .orWhere('friends.requesterId = :friendId AND friends.receiverId = :userId', { friendId, userId })
+      .getOne()
+    if (!query) {
+      throw new MyHttpException('cant query', HttpStatus.NOT_FOUND)
+    }
+    return query
   }
 }

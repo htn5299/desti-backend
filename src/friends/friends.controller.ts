@@ -69,6 +69,10 @@ export class FriendsController {
   }
   @Delete(':id')
   async delete(@User('sub') userId: number, @Param('id', ParseIntPipe) friendId: number) {
-    await this.friendsService.delete(userId, friendId)
+    return await this.friendsService.delete(userId, friendId)
+  }
+  @Get('check/:id/')
+  async check(@User('sub') userId: number, @Param('id', ParseIntPipe) friendId: number) {
+    return await this.friendsService.check(userId, friendId)
   }
 }
