@@ -1,12 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
-import { Friend } from '../utils/typeorm/entities/Friend.entity'
 import { Repository } from 'typeorm'
-import { CheckedFriend, Services, StatusCode } from '../utils/constranst'
+import { Services, StatusCode } from '../utils/constranst'
 import { IUserService } from '../users/interfaces/user'
 import { UpdateFriendDto } from './dto/UpdateFriend.dto'
 import { MyHttpException } from '../utils/myHttpException'
-import { User } from '../utils/typeorm/entities/User.entity'
+import { User, Friend } from '../utils/typeorm'
 import { IFriendsService } from './interface/friend'
 
 @Injectable()

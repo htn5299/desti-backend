@@ -1,4 +1,4 @@
-import { entities } from '../typeorm'
+import entities from '../typeorm'
 import * as dotenv from 'dotenv'
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 export default () => ({

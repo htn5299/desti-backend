@@ -8,9 +8,18 @@ import { JwtStrategy } from './strategy/jwt.strategy'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RefreshToken } from '../utils/typeorm/entities/RefreshToken.entity'
 import { RefreshTokenService } from './refreshToken.service'
+import configuration from '../utils/config/configuration'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RefreshToken]), UsersModule, JwtModule.register({})],
+  imports: [
+    TypeOrmModule.forFeature([RefreshToken]),
+    UsersModule,
+    JwtModule.register({
+      global: true,
+      secret: configuration().JWT_SECRET_KEY,
+      signOptions: { expiresIn: configuration().JWT_EXPIRATION_TIME }
+    })
+  ],
   controllers: [AuthController],
   providers: [
     {

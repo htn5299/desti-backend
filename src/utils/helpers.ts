@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
+
 export const hashPassword = async (rawPwd: string) => {
-  const hashedPwd = bcrypt.hashSync(rawPwd, 10)
-  return hashedPwd
+  return bcrypt.hashSync(rawPwd, 10)
 }
 export const compareHash = async (rawPwd: string, hashedPwd: string) => {
   return bcrypt.compareSync(rawPwd, hashedPwd)
@@ -27,4 +27,8 @@ export const slugString = (str: string) => {
     .replace(/-+/g, '-') // collapse dashes
 
   return str
+}
+export const extractTokenFromHeader = (request: Request): string | undefined => {
+  const [type, token] = request.headers['authorization']?.split(' ') ?? []
+  return type === 'Bearer' ? token : undefined
 }

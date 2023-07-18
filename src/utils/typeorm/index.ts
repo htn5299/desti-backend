@@ -10,8 +10,10 @@ import { NotificationEntity } from './entities/Notification.entity'
 import { NotificationRecipientEntity } from './entities/NotificationRecipient.entity'
 import { LikeEntity } from './entities/Like.entity'
 import { CommentEntity } from './entities/Comment.entity'
+import { Message } from './entities/Message.entity'
+import { Conversation } from './entities/Conversation.entity'
 
-export const entities = [
+const entities = [
   User,
   Profile,
   RefreshToken,
@@ -23,5 +25,24 @@ export const entities = [
   NotificationEntity,
   NotificationRecipientEntity,
   LikeEntity,
-  CommentEntity
+  CommentEntity,
+  Message,
+  Conversation
 ]
+export default entities
+export {
+  User,
+  Profile,
+  RefreshToken,
+  Friend,
+  Place,
+  Review,
+  Favourite,
+  PlaceImage,
+  NotificationEntity,
+  NotificationRecipientEntity,
+  LikeEntity,
+  CommentEntity,
+  Message,
+  Conversation
+}

@@ -7,6 +7,7 @@ import { Review } from './Review.entity'
 import { Favourite } from './Favourite.entity'
 import { LikeEntity } from './Like.entity'
 import { CommentEntity } from './Comment.entity'
+import { Message } from './Message.entity'
 
 @Entity({ name: 'users' })
 export class User {
@@ -47,4 +48,8 @@ export class User {
 
   @OneToMany(() => Favourite, (favourites) => favourites.user)
   favourites: Favourite[]
+
+  @OneToMany(() => Message, (message) => message.author)
+  @JoinColumn()
+  messages: Message[]
 }

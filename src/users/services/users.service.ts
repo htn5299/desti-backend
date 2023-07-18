@@ -59,7 +59,13 @@ export class UsersService implements IUserService {
         // .where(`user.email ILIKE :query`, { query: `%${query}%` })
         .where(`user.name ILIKE :query`, { query: `%${query}%` })
     }
-    return queryBuilder.limit(10).select(['user.name', 'user.email', 'user.id']).getMany()
+    return (
+      queryBuilder
+        .leftJoinAndSelect('user.profile', 'profile')
+        .limit(10)
+        // .select(['user.name', 'user.email', 'user.id'])
+        .getMany()
+    )
   }
 
   async getUser(findUserParams: FindUserParams): Promise<User> {

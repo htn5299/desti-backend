@@ -16,6 +16,8 @@ import { NewsfeedModule } from './newsfeed/newsfeed.module'
 import { PlaceImagesModule } from './place-images/place-images.module'
 import { NotificationModule } from './notification/notification.module'
 import { LikesModule } from './likes/likes.module'
+import { MessagesModule } from './messages/messages.module'
+import { ConversationsModule } from './conversations/conversations.module'
 
 @Module({
   imports: [
@@ -42,9 +44,10 @@ import { LikesModule } from './likes/likes.module'
     NewsfeedModule,
     PlaceImagesModule,
     NotificationModule,
-    LikesModule
+    LikesModule,
+    MessagesModule,
+    ConversationsModule
   ],
-  controllers: [],
-  providers: []
+  controllers: []
 })
 export class AppModule {}

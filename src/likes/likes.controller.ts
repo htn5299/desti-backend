@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common'
 import { ILikes } from './interface/likes'
 import { Services } from '../utils/constranst'
 import { User } from '../users/utils/user.decorator'

@@ -1,5 +1,6 @@
 import { Express } from 'express'
 import { Action, Services } from './constranst'
+import { Conversation, Message, User } from './typeorm'
 
 export type CreateUserDetails = {
   email: string
@@ -93,4 +94,60 @@ export type CommentType = {
   userId: number
   comment: string
   createdAt: Date
+}
+
+export type AccessParams = {
+  id: number
+  userId: number
+}
+export type CreateConversationParams = {
+  email: string
+  // message: string
+}
+export type GetConversationMessagesParams = {
+  id: number
+  limit: number
+}
+export type UpdateConversationParams = Partial<{
+  id: number
+  lastMessageSent: Message
+}>
+export type CreateMessageParams = {
+  id: number
+  content?: string
+  user: User
+}
+
+export type CreateMessageResponse = {
+  message: Message
+  conversation: Conversation
+}
+
+export type DeleteMessageParams = {
+  userId: number
+  conversationId: number
+  messageId: number
+}
+
+export type FindMessageParams = {
+  userId: number
+  conversationId: number
+  messageId: number
+}
+
+export type EditMessageParams = {
+  conversationId: number
+  messageId: number
+  userId: number
+  content: string
+}
+
+export type EditGroupMessageParams = {
+  groupId: number
+  messageId: number
+  userId: number
+  content: string
+}
+export interface AuthenticatedRequest extends Request {
+  user: User
 }
