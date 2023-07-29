@@ -12,6 +12,7 @@ import { LikeEntity } from './entities/Like.entity'
 import { CommentEntity } from './entities/Comment.entity'
 import { Message } from './entities/Message.entity'
 import { Conversation } from './entities/Conversation.entity'
+import { CodeResetEntity } from './entities/CodeReset.entity'
 
 const entities = [
   User,
@@ -27,7 +28,8 @@ const entities = [
   LikeEntity,
   CommentEntity,
   Message,
-  Conversation
+  Conversation,
+  CodeResetEntity
 ]
 export default entities
 export {
@@ -44,5 +46,6 @@ export {
   LikeEntity,
   CommentEntity,
   Message,
-  Conversation
+  Conversation,
+  CodeResetEntity
 }

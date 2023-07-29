@@ -21,8 +21,8 @@ export class ConversationInterceptor implements NestInterceptor {
     @Inject(Services.CONVERSATIONS)
     private readonly conversationsService: IConversationsService
   ) {}
+
   async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
-    console.log('conversationInterceptor')
     const request = context.switchToHttp().getRequest()
     const token = extractTokenFromHeader(request)
     if (!token) {

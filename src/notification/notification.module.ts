@@ -3,8 +3,7 @@ import { NotificationController } from './notification.controller'
 import { NotificationService } from './notification.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { NotificationEntity } from '../utils/typeorm/entities/Notification.entity'
-import { NotificationRecipientEntity } from '../utils/typeorm/entities/NotificationRecipient.entity'
+import { NotificationEntity, NotificationRecipientEntity } from '../utils/typeorm'
 
 @Module({
   imports: [TypeOrmModule.forFeature([NotificationEntity, NotificationRecipientEntity])],

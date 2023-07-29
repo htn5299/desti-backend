@@ -33,6 +33,7 @@ export class MessagesController {
     private readonly userService: IUserService,
     private eventEmitter: EventEmitter2
   ) {}
+
   @Throttle(5, 10)
   @Post()
   async createMessage(
@@ -42,14 +43,14 @@ export class MessagesController {
     body: CreateMessageDto
   ) {
     const { content } = body
-    console.log(body)
     if (!content) throw new EmptyMessageException()
-    const user = await this.userService.findOne({ id: userId })
+    const user = await this.userService.getUser({ id: userId })
     const params = { user, id, content }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const response = await this.messageService.createMessage(params)
+    this.eventEmitter.emit('message.create', response)
     return
   }
+
   @Get()
   @SkipThrottle()
   async getMessagesFromConversation(@Param('id', ParseIntPipe) id: number) {
@@ -68,6 +69,7 @@ export class MessagesController {
     this.eventEmitter.emit('message.delete', params)
     return { conversationId, messageId }
   }
+
   // api/conversations/:conversationId/messages/:messageId
   @Patch(':messageId')
   async editMessage(

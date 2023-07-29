@@ -1,6 +1,6 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { ILikes } from './interface/likes'
-import { LikeEntity } from '../utils/typeorm/entities/Like.entity'
+import { LikeEntity } from '../utils/typeorm'
 import { LikeType } from '../utils/types'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'

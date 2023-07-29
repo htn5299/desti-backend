@@ -2,11 +2,10 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { IAuthService, TokenData } from './interfaces/auth'
 import { Services } from '../utils/constranst'
 import { IUserService } from '../users/interfaces/user'
-import { User } from '../utils/typeorm/entities/User.entity'
-import { Payload, ValidateUserDetails } from '../utils/types'
+import { Payload, UserDetails, ValidateUserDetails } from '../utils/types'
 import { compareHash } from '../utils/helpers'
 import { JwtService } from '@nestjs/jwt'
-import { RefreshToken } from '../utils/typeorm/entities/RefreshToken.entity'
+import { RefreshToken, User } from '../utils/typeorm'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MyHttpException } from '../utils/myHttpException'
@@ -22,8 +21,19 @@ export class AuthService implements IAuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     @Inject(Services.REFRESH_TOKEN)
-    private refreshTokenService: IRefreshTokenService
+    private refreshTokenService: IRefreshTokenService,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
+
+  async validateGoogleUser(userDetails: UserDetails): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { email: userDetails.email } })
+    if (user) return user
+    return await this.userService.create({
+      email: userDetails.email,
+      name: userDetails.name,
+      password: 'test1234'
+    })
+  }
 
   async validateUser(userCredentials: ValidateUserDetails): Promise<User> {
     const user = await this.userService.findOne(

@@ -5,7 +5,7 @@ import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from '../users/users.module'
 import { ReviewsModule } from '../reviews/reviews.module'
-import { Place } from '../utils/typeorm/entities/Place.entity'
+import { Place } from '../utils/typeorm'
 import { PlaceImagesModule } from '../place-images/place-images.module'
 
 @Module({

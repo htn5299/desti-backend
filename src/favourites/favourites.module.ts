@@ -3,7 +3,7 @@ import { FavouritesController } from './favourites.controller'
 import { FavouritesService } from './favourites.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Favourite } from '../utils/typeorm/entities/Favourite.entity'
+import { Favourite } from '../utils/typeorm'
 import { UsersModule } from '../users/users.module'
 import { PlacesModule } from '../places/places.module'
 

@@ -1,7 +1,5 @@
-import { Favourite } from '../../utils/typeorm/entities/Favourite.entity'
 import { FavouriteType, UserPlaceIndex } from '../../utils/types'
-import { Place } from '../../utils/typeorm/entities/Place.entity'
-import { User } from '../../utils/typeorm/entities/User.entity'
+import { Place, Favourite, User } from '../../utils/typeorm'
 
 export interface IFavourites {
   getFavourite(userPlaceIndex: UserPlaceIndex): Promise<Favourite>

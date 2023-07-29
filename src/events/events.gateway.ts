@@ -15,11 +15,12 @@ import { Inject, Logger } from '@nestjs/common'
 import { AuthenticatedSocket } from '../utils/interfaces'
 import { IGatewaySessionManager } from './gateway.session'
 import { OnEvent } from '@nestjs/event-emitter'
-import { Review } from '../utils/typeorm/entities/Review.entity'
 import { INotification } from '../notification/interface/notification'
 import { IFriendsService } from '../friends/interface/friend'
-import { ConfigService } from '@nestjs/config'
 import configuration from '../utils/config/configuration'
+import { CreateMessageResponse } from '../utils/types'
+import { Conversation, Message, Review } from '../utils/typeorm'
+import { IConversationsService } from '../conversations/interfaces/conversations'
 
 @WebSocketGateway({
   namespace: 'events',
@@ -41,7 +42,8 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @Inject(Services.AUTH) private readonly authService: IAuthService,
     @Inject(Services.NOTIFICATION) private readonly notificationService: INotification,
     @Inject(Services.FRIENDS) private readonly friendsService: IFriendsService,
-    private configService: ConfigService
+    @Inject(Services.CONVERSATIONS)
+    private readonly conversationService: IConversationsService
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -66,6 +68,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   handleDisconnect(@ConnectedSocket() socket: AuthenticatedSocket): any {
     this.sessions.removeUserSocket(socket.data?.user?.sub)
   }
+
   //server listen from react
   @SubscribeMessage('onPlaceJoin')
   onReviewJoin(@MessageBody() data: any, @ConnectedSocket() client: AuthenticatedSocket) {
@@ -78,11 +81,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     client.leave(`place-${data.placeId}`)
     // client.to(`place-${data.placeId}`).emit('userLeave', { client: client.data.user.email })
   }
+
   //listen from controller
   @OnEvent(ServerEvents.REVIEW_CREATE)
   async handleReviewCreateEvent(payload: Review) {
     this.server.to(`place-${payload.place.id}`).emit('onReview', payload)
   }
+
   @OnEvent(ServerEvents.REVIEW_DELETE)
   async handleReviewDeleteEvent(payload: Review) {
     this.server.to(`place-${payload.place.id}`).emit('onDeleteReview', payload)
@@ -97,6 +102,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       receiverSocket.emit('onFriendReviewReceived', newNotification)
     }
   }
+
   @OnEvent(ServerEvents.FRIEND_REQUEST)
   async handleFriendRequest(payload: { notificationRecipientId: number; recipientId: number }) {
     const { recipientId, notificationRecipientId } = payload
@@ -106,6 +112,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       receiverSocket.emit('onFriendRequest', newNotification)
     }
   }
+
   @OnEvent(ServerEvents.FRIEND_RESPONSE)
   async handleFriendResponse(payload: { notificationRecipientId: number; recipientId: number }) {
     const { recipientId, notificationRecipientId } = payload
@@ -113,6 +120,60 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     if (receiverSocket) {
       const newNotification = await this.notificationService.getNotificationRecipientById({ notificationRecipientId })
       receiverSocket.emit('onFriendResponse', newNotification)
+    }
+  }
+
+  @OnEvent('conversation.create')
+  handleConversationCreateEvent(payload: Conversation) {
+    const recipientSocket = this.sessions.getUserSocket(payload.recipient.id)
+    if (recipientSocket) recipientSocket.emit('onConversation', payload)
+  }
+
+  @OnEvent('message.create')
+  handleMessageCreateEvent(payload: CreateMessageResponse) {
+    const {
+      author,
+      conversation: { creator, recipient }
+    } = payload.message
+
+    const authorSocket = this.sessions.getUserSocket(author.id)
+    const recipientSocket =
+      author.id === creator.id ? this.sessions.getUserSocket(recipient.id) : this.sessions.getUserSocket(creator.id)
+
+    if (authorSocket) authorSocket.emit('onMessage', payload)
+    if (recipientSocket) recipientSocket.emit('onMessage', payload)
+  }
+
+  @OnEvent('message.delete')
+  async handleMessageDelete(payload) {
+    const conversation = await this.conversationService.findById(payload.conversationId)
+    if (!conversation) return
+    const { creator, recipient } = conversation
+    const recipientSocket =
+      creator.id === payload.userId
+        ? this.sessions.getUserSocket(recipient.id)
+        : this.sessions.getUserSocket(creator.id)
+    if (recipientSocket) recipientSocket.emit('onMessageDelete', payload)
+  }
+
+  @OnEvent('message.update')
+  async handleMessageUpdate(message: Message) {
+    const {
+      author,
+      conversation: { creator, recipient }
+    } = message
+    const recipientSocket =
+      author.id === creator.id ? this.sessions.getUserSocket(recipient.id) : this.sessions.getUserSocket(creator.id)
+    if (recipientSocket) recipientSocket.emit('onMessageUpdate', message)
+  }
+
+  @OnEvent(ServerEvents.COMMENT_CREATE)
+  async handleCommentCreate(payload: { notificationRecipientId: number; recipientId: number }) {
+    const { recipientId, notificationRecipientId } = payload
+    const receiverSocket = this.sessions.getUserSocket(recipientId)
+    if (receiverSocket) {
+      const newNotification = await this.notificationService.getNotificationRecipientById({ notificationRecipientId })
+      receiverSocket.emit('onCommentCreate', newNotification)
     }
   }
 }

@@ -18,6 +18,10 @@ import { NotificationModule } from './notification/notification.module'
 import { LikesModule } from './likes/likes.module'
 import { MessagesModule } from './messages/messages.module'
 import { ConversationsModule } from './conversations/conversations.module'
+import { CodeResetModule } from './code-reset/code-reset.module'
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer'
+import { join } from 'path'
+import { BullModule } from '@nestjs/bull'
 
 @Module({
   imports: [
@@ -30,6 +34,43 @@ import { ConversationsModule } from './conversations/conversations.module'
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => configService.get('CONTAINER'),
+      inject: [ConfigService]
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        // transport: config.get('MAIL_TRANSPORT'),
+        transport: {
+          host: config.get('MAIL_HOST'),
+          secure: false,
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASSWORD')
+          }
+        },
+        defaults: {
+          from: `"Desti" <${config.get('MAIL_FROM')}>`
+        },
+        template: {
+          dir: join(__dirname, 'src/templates/email'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true
+          }
+        }
+      }),
+      inject: [ConfigService]
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        redis: {
+          host: config.get('REDIS_HOST'),
+          port: config.get('REDIS_PORT'),
+          // username: config.get('REDIS_USERNAME'),
+          password: config.get('REDIS_PASSWORD')
+        }
+      }),
       inject: [ConfigService]
     }),
     UsersModule,
@@ -46,7 +87,8 @@ import { ConversationsModule } from './conversations/conversations.module'
     NotificationModule,
     LikesModule,
     MessagesModule,
-    ConversationsModule
+    ConversationsModule,
+    CodeResetModule
   ],
   controllers: []
 })

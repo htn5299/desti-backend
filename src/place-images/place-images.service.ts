@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { PlaceImage } from '../utils/typeorm/entities/PlaceImage.entity'
+import { PlaceImage } from '../utils/typeorm'
 import { Repository } from 'typeorm'
 import { IImageStorageService } from '../image-storage/image.storage'
 import { Services } from '../utils/constranst'
@@ -14,6 +14,7 @@ export class PlaceImagesService implements IPlaceImagesService {
     @Inject(Services.IMAGE_STORAGE) private readonly imageStorageService: IImageStorageService,
     @Inject(Services.PLACES) private readonly placesService: IPlacesService
   ) {}
+
   async uploadFiles(files: Express.MulterS3.File[], placeId: number) {
     const keys = await this.imageStorageService.uploads(files)
     const place = await this.placesService.findOne({ id: placeId })
@@ -23,6 +24,7 @@ export class PlaceImagesService implements IPlaceImagesService {
     })
     return
   }
+
   async getImages(placeId: number): Promise<PlaceImage[]> {
     return await this.placeImgRepo
       .createQueryBuilder('placeimages')

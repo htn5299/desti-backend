@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { RefreshToken } from '../utils/typeorm/entities/RefreshToken.entity'
+import { RefreshToken } from '../utils/typeorm'
 import { Repository } from 'typeorm'
 import { MyHttpException } from '../utils/myHttpException'
 import { IRefreshTokenService } from './interfaces/refreshToken'
@@ -11,6 +11,7 @@ export class RefreshTokenService implements IRefreshTokenService {
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>
   ) {}
+
   async findToken(refreshToken: string): Promise<RefreshToken> {
     const token = this.refreshTokenRepository.findOneBy({
       token: refreshToken
@@ -20,6 +21,7 @@ export class RefreshTokenService implements IRefreshTokenService {
     }
     return token
   }
+
   async deleteToken(refreshToken: string): Promise<void> {
     await this.refreshTokenRepository.delete({ token: refreshToken })
   }

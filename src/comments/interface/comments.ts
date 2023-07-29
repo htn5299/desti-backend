@@ -1,4 +1,4 @@
-import { CommentEntity } from '../../utils/typeorm/entities/Comment.entity'
+import { CommentEntity } from '../../utils/typeorm'
 import { CommentType } from '../../utils/types'
 
 export interface IComments {

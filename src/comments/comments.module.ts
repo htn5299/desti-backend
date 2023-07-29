@@ -5,10 +5,16 @@ import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersModule } from '../users/users.module'
 import { ReviewsModule } from '../reviews/reviews.module'
-import { CommentEntity } from '../utils/typeorm/entities/Comment.entity'
+import { CommentEntity } from '../utils/typeorm'
+import { NotificationModule } from '../notification/notification.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CommentEntity]), forwardRef(() => UsersModule), forwardRef(() => ReviewsModule)],
+  imports: [
+    TypeOrmModule.forFeature([CommentEntity]),
+    forwardRef(() => UsersModule),
+    forwardRef(() => ReviewsModule),
+    NotificationModule
+  ],
   controllers: [CommentsController],
   providers: [
     {

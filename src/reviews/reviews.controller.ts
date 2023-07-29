@@ -33,6 +33,7 @@ export class ReviewsController {
       service: Services.REVIEWS,
       action: Action.POST,
       entity: newReview.id,
+      content: `has reviewed a place. ${content.review.split(' ').slice(0, 10).join(' ') + '...'}`,
       actor: newReview.user.id
     })
     //gui thong bao cho ban be
@@ -50,6 +51,7 @@ export class ReviewsController {
       })
     return newReview
   }
+
   @Get(':id')
   async getReviewById(@Param('id', ParseIntPipe) reviewId: number) {
     return await this.reviewsService.getReviewById(reviewId)
@@ -59,6 +61,7 @@ export class ReviewsController {
   async getReviewsByUserId(@Param('userId', ParseIntPipe) userId: number) {
     return await this.reviewsService.getReviewsByUserId(userId)
   }
+
   @Get('places/:placeId/me')
   async getMyReviewsByUserPlaceIndex(@User('sub') userId: number, @Param('placeId', ParseIntPipe) placeId: number) {
     return await this.reviewsService.getMyReviewsByUserPlaceIndex({ userId, placeId })
@@ -94,6 +97,7 @@ export class ReviewsController {
       })
     return updateReview
   }
+
   @Delete('places/:placeId/me')
   async deleteReview(@User('sub') userId: number, @Param('placeId', ParseIntPipe) placeId: number) {
     const userPlaceIndex: UserPlaceIndex = { userId, placeId }
@@ -102,6 +106,7 @@ export class ReviewsController {
     await this.notificationsService.deleteNotification({ entity: deleteReview.id })
     return deleteReview
   }
+
   @Get('places/:placeId')
   async getReviewsByPlaceId(@Param('placeId', ParseIntPipe) placeId: number) {
     return await this.reviewsService.getReviewsByPlaceId(placeId)

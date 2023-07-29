@@ -1,6 +1,6 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { IComments } from './interface/comments'
-import { CommentEntity } from '../utils/typeorm/entities/Comment.entity'
+import { CommentEntity } from '../utils/typeorm'
 import { CommentType } from '../utils/types'
 import { MyHttpException } from '../utils/myHttpException'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -16,6 +16,7 @@ export class CommentsService implements IComments {
     @Inject(Services.USERS) private userService: IUserService,
     @Inject(Services.REVIEWS) private reviewService: IReviewsService
   ) {}
+
   async create(content: Omit<CommentType, 'id' | 'createdAt'>): Promise<CommentEntity> {
     const { userId, reviewId, comment } = content
 
@@ -30,6 +31,7 @@ export class CommentsService implements IComments {
     const newComment = this.commentRepo.create({ user, review, comment })
     return await this.commentRepo.save(newComment)
   }
+
   async getMany(comment: Partial<Pick<CommentType, 'userId' | 'reviewId'>>): Promise<CommentEntity[]> {
     const { reviewId, userId } = comment
     if (reviewId && userId) {
@@ -54,6 +56,7 @@ export class CommentsService implements IComments {
     }
     return
   }
+
   async delete(comment: Pick<CommentType, 'id' | 'userId'>): Promise<CommentEntity> {
     const { id, userId } = comment
     const existingComment = await this.getOne({ id })
@@ -66,6 +69,7 @@ export class CommentsService implements IComments {
     await this.commentRepo.delete({ id: existingComment.id })
     return existingComment
   }
+
   async getOne(comment: Partial<Omit<CommentType, 'createdAt' | 'comment'>>): Promise<CommentEntity> {
     const { id, reviewId, userId } = comment
     if (id) {

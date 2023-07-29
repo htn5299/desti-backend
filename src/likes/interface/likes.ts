@@ -1,5 +1,5 @@
 import { LikeType } from '../../utils/types'
-import { LikeEntity } from '../../utils/typeorm/entities/Like.entity'
+import { LikeEntity } from '../../utils/typeorm'
 
 export interface ILikes {
   setLike(like: Pick<LikeType, 'userId' | 'reviewId' | 'isLiked'>): Promise<LikeEntity>

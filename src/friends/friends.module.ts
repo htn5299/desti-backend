@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Friend } from '../utils/typeorm/entities/Friend.entity'
+import { Friend } from '../utils/typeorm'
 import { UsersModule } from '../users/users.module'
 import { FriendsController } from './friends.controller'
 import { FriendsService } from './friends.service'

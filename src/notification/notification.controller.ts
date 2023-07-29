@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common'
+import { Controller, Get, Inject, ParseIntPipe, Query, UseGuards } from '@nestjs/common'
 import { Routes, Services } from 'utils/constranst'
 import { INotification } from './interface/notification'
 import { User } from '../users/utils/user.decorator'
@@ -8,8 +8,9 @@ import { JwtAuthGuard } from '../auth/guard/jwt.guard'
 @UseGuards(JwtAuthGuard)
 export class NotificationController {
   constructor(@Inject(Services.NOTIFICATION) private readonly notificationService: INotification) {}
+
   @Get()
-  async test(@User('sub') userId: number) {
-    return await this.notificationService.getAllNotificationByUser({ userId })
+  async test(@User('sub') userId: number, @Query('page', ParseIntPipe) page: number) {
+    return await this.notificationService.getAllNotificationByUser({ userId, page })
   }
 }

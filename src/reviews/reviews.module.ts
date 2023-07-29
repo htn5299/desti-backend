@@ -2,12 +2,13 @@ import { forwardRef, Module } from '@nestjs/common'
 import { ReviewsService } from './reviews.service'
 import { Services } from '../utils/constranst'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Review } from '../utils/typeorm/entities/Review.entity'
+import { Review } from '../utils/typeorm'
 import { UsersModule } from '../users/users.module'
 import { PlacesModule } from '../places/places.module'
 import { ReviewsController } from './reviews.controller'
 import { FriendsModule } from '../friends/friends.module'
 import { NotificationModule } from '../notification/notification.module'
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Review]),

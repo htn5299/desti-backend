@@ -7,7 +7,6 @@ export type CreateUserDetails = {
   name: string
   password: string
 }
-
 export type FindUserParams = Partial<{
   id: number
   email: string
@@ -16,10 +15,12 @@ export type FindPlace = Partial<{
   id: number
   createdId: number
 }>
+export type UserDetails = { email: string; name: string }
 
 export type FindUserOptions = Partial<{
   selectAll: boolean
 }>
+
 export type ValidateUserDetails = {
   email: string
   password: string
@@ -47,6 +48,7 @@ export type NotificationType = {
   actor: number
   entity: number
   action: Action
+  content?: string
   service: Services
   createdAt: Date
   updatedAt: Date
@@ -148,6 +150,7 @@ export type EditGroupMessageParams = {
   userId: number
   content: string
 }
+
 export interface AuthenticatedRequest extends Request {
   user: User
 }

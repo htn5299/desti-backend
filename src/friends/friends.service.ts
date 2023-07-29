@@ -113,6 +113,7 @@ export class FriendsService implements IFriendsService {
       .orWhere('requesterId = :friendId AND receiverId = :userId', { friendId, userId })
       .execute()
   }
+
   async getOne(id: number, userId: number): Promise<User> {
     const friend = await this.friendRepository
       .createQueryBuilder('friends')
@@ -129,6 +130,7 @@ export class FriendsService implements IFriendsService {
     }
     return friend.receiver.id === user.id ? friend.requester : friend.receiver
   }
+
   async check(userId: number, friendId: number): Promise<Friend> {
     if (userId === friendId) {
       throw new MyHttpException('this is you', HttpStatus.BAD_REQUEST)

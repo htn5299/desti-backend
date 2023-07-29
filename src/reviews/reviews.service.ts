@@ -1,6 +1,6 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { IReviewsService } from './interface/reviews'
-import { Review } from '../utils/typeorm/entities/Review.entity'
+import { Review } from '../utils/typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserPlaceIndex } from '../utils/types'
@@ -19,6 +19,7 @@ export class ReviewsService implements IReviewsService {
     @Inject(Services.USERS) private readonly usersService: IUserService,
     @Inject(Services.PLACES) private readonly placesService: IPlacesService
   ) {}
+
   async createReview(userPlaceIndex: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
     const myReview = await this.getMyReviewsByUserPlaceIndex(userPlaceIndex)
     if (myReview) {
@@ -30,6 +31,7 @@ export class ReviewsService implements IReviewsService {
 
     return await this.reviewRepository.save(createReview)
   }
+
   async getReviewById(reviewId: number): Promise<Review> {
     return await this.reviewRepository
       .createQueryBuilder('review')
@@ -53,6 +55,7 @@ export class ReviewsService implements IReviewsService {
       .orderBy('review.updatedAt', 'DESC')
       .getMany()
   }
+
   async getReviewsByUserId(userId: number): Promise<Review[]> {
     return await this.reviewRepository
       .createQueryBuilder('review')
@@ -67,6 +70,7 @@ export class ReviewsService implements IReviewsService {
       .orderBy('review.updatedAt', 'DESC')
       .getMany()
   }
+
   async getMyReviewsByUserPlaceIndex(userPlaceIndex: UserPlaceIndex): Promise<Review> {
     return await this.reviewRepository
       .createQueryBuilder('review')
@@ -78,6 +82,7 @@ export class ReviewsService implements IReviewsService {
       })
       .getOne()
   }
+
   async updateMyReviewsByPlaceIndex(userPlaceIndex: UserPlaceIndex, content: CreateReviewDto): Promise<Review> {
     const myReview = await this.getMyReviewsByUserPlaceIndex(userPlaceIndex)
     if (!myReview) {
@@ -109,7 +114,6 @@ export class ReviewsService implements IReviewsService {
   async newsfeed(userId: number, page): Promise<Review[]> {
     const friends = await this.friendsService.list(userId)
     const friendIds = friends.map((friend) => friend.id)
-
     return friendIds.length
       ? await this.reviewRepository
           .createQueryBuilder('reviews')
@@ -117,8 +121,8 @@ export class ReviewsService implements IReviewsService {
           .leftJoinAndSelect('reviews.place', 'place')
           .leftJoinAndSelect('reviews.user', 'user')
           .leftJoinAndSelect('user.profile', 'profile')
-          .take(3)
-          .skip(3 * (page - 1))
+          .take(5)
+          .skip(5 * (page - 1))
           .orderBy('reviews.updatedAt', 'DESC')
           .getMany()
       : []

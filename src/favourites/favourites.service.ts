@@ -1,15 +1,13 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { IFavourites } from './interface/favourites'
-import { Favourite } from '../utils/typeorm/entities/Favourite.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { FavouriteType, UserPlaceIndex } from '../utils/types'
-import { Place } from '../utils/typeorm/entities/Place.entity'
 import { IUserService } from '../users/interfaces/user'
 import { Services } from '../utils/constranst'
 import { IPlacesService } from '../places/interface/places'
-import { User } from '../utils/typeorm/entities/User.entity'
 import { MyHttpException } from '../utils/myHttpException'
+import { User, Favourite, Place } from '../utils/typeorm'
 
 @Injectable()
 export class FavouritesService implements IFavourites {

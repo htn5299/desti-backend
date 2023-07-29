@@ -24,6 +24,7 @@ export class MessagesService implements IMessageService {
     @Inject(Services.FRIENDS)
     private readonly friendsService: IFriendsService
   ) {}
+
   async createMessage(params: CreateMessageParams): Promise<CreateMessageResponse> {
     const { user, content, id } = params
     const conversation = await this.conversationService.findById(id)
@@ -42,6 +43,7 @@ export class MessagesService implements IMessageService {
     const updated = await this.conversationService.save(conversation)
     return { message: savedMessage, conversation: updated }
   }
+
   async getMessages(conversationId: number): Promise<Message[]> {
     return this.messageRepository.find({
       relations: ['author', 'author.profile'],
@@ -49,6 +51,7 @@ export class MessagesService implements IMessageService {
       order: { createdAt: 'DESC' }
     })
   }
+
   async deleteMessage(params: DeleteMessageParams) {
     const { conversationId } = params
     const msgParams = { id: conversationId, limit: 5 }
@@ -60,18 +63,17 @@ export class MessagesService implements IMessageService {
     if (conversation.lastMessageSent.id !== message.id) return this.messageRepository.delete({ id: message.id })
     return this.deleteLastMessage(conversation, message)
   }
+
   async deleteLastMessage(conversation: Conversation, message: Message) {
     const size = conversation.messages.length
     const SECOND_MESSAGE_INDEX = 1
     if (size <= 1) {
-      console.log('Last Message Sent is deleted')
       await this.conversationService.update({
         id: conversation.id,
         lastMessageSent: null
       })
       return this.messageRepository.delete({ id: message.id })
     } else {
-      console.log('There are more than 1 message')
       const newLastMessage = conversation.messages[SECOND_MESSAGE_INDEX]
       await this.conversationService.update({
         id: conversation.id,
@@ -80,6 +82,7 @@ export class MessagesService implements IMessageService {
       return this.messageRepository.delete({ id: message.id })
     }
   }
+
   async editMessage(params: EditMessageParams): Promise<Message> {
     const messageDB = await this.messageRepository.findOne({
       where: {

@@ -15,7 +15,8 @@ export enum Services {
   NOTIFICATION = 'NOTIFICATION_SERVICE',
   LIKES = 'LIKES_SERVICE',
   CONVERSATIONS = 'CONVERSATIONS_SERVICE',
-  MESSAGES = 'MESSAGE_SERVICE'
+  MESSAGES = 'MESSAGE_SERVICE',
+  CODE_RESET = 'CODE_RESET_SERVICE'
 }
 
 export enum Routes {
@@ -38,20 +39,24 @@ export enum ServerEvents {
   REVIEW_DELETE = 'review.delete',
   FRIEND_REVIEW = 'friend.review',
   FRIEND_REQUEST = 'friend.request',
-  FRIEND_RESPONSE = 'friend.response'
+  FRIEND_RESPONSE = 'friend.response',
+  COMMENT_CREATE = 'comment.create'
 }
 
 export enum WebsocketEvents {}
+
 export enum Action {
   POST = 'POST',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE'
 }
+
 export enum StatusCode {
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   DECLINED = 'DECLINED'
 }
+
 export enum CheckedFriend {
   YOU = 'you',
   FRIEND = `friend`,

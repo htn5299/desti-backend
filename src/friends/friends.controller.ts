@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, UseGuards, ParseIntPipe } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
 import { Action, Routes, ServerEvents, Services, StatusCode } from '../utils/constranst'
 import { IFriendsService } from './interface/friend'
 import { JwtAuthGuard } from '../auth/guard/jwt.guard'
@@ -23,6 +23,7 @@ export class FriendsController {
       service: Services.FRIENDS,
       action: Action.POST,
       actor: userId,
+      content: 'has sent a friend request.',
       entity: friendRequest.id
     })
     const newNotificationRecipient = await this.notificationsService.createNotificationRecipient({
@@ -35,6 +36,7 @@ export class FriendsController {
     })
     return friendRequest
   }
+
   @Patch(':id')
   async response(
     @User('sub') userId: number,
@@ -46,6 +48,7 @@ export class FriendsController {
       actor: userId,
       action: Action.UPDATE,
       service: Services.FRIENDS,
+      content: updateFriendDto.status === StatusCode.ACCEPTED ? 'đã chấp nhận yêu cầu kết bạn' : '',
       entity: friendResponse.id
     })
     const newNotificationRecipient = await this.notificationsService.createNotificationRecipient({
@@ -59,18 +62,22 @@ export class FriendsController {
       })
     return friendResponse
   }
+
   @Get('users/:id')
   async listFriend(@Param('id', ParseIntPipe) userId: number) {
     return await this.friendsService.list(userId)
   }
+
   @Get(':id')
   async getOne(@Param('id', ParseIntPipe) friendId: number, @User('sub') userId: number) {
     return await this.friendsService.getOne(friendId, userId)
   }
+
   @Delete(':id')
   async delete(@User('sub') userId: number, @Param('id', ParseIntPipe) friendId: number) {
     return await this.friendsService.delete(userId, friendId)
   }
+
   @Get('check/:id/')
   async check(@User('sub') userId: number, @Param('id', ParseIntPipe) friendId: number) {
     return await this.friendsService.check(userId, friendId)

@@ -30,6 +30,7 @@ export class ConversationsService implements IConversationsService {
     @Inject(Services.FRIENDS)
     private readonly friendsService: IFriendsService
   ) {}
+
   async getConversations(id: number): Promise<Conversation[]> {
     return this.conversationRepository
       .createQueryBuilder('conversation')
@@ -43,12 +44,14 @@ export class ConversationsService implements IConversationsService {
       .orderBy('conversation.lastMessageSentAt', 'DESC')
       .getMany()
   }
+
   async findById(id: number): Promise<Conversation | undefined> {
     return this.conversationRepository.findOne({
       where: { id },
       relations: ['creator', 'recipient', 'creator.profile', 'recipient.profile', 'lastMessageSent']
     })
   }
+
   async isCreated(userId: number, recipientId: number): Promise<Conversation | undefined> {
     return this.conversationRepository.findOne({
       where: [
@@ -63,10 +66,11 @@ export class ConversationsService implements IConversationsService {
       ]
     })
   }
+
   async createConversation(creator: User, params: CreateConversationParams): Promise<Conversation> {
     // const { email, message: content } = params
     const { email } = params
-    const recipient = await this.userService.findOne({ email })
+    const recipient = await this.userService.getUser({ email })
     if (!recipient) throw new UserNotFoundException()
     if (creator.id === recipient.id) throw new CreateConversationException('Cannot create Conversation with yourself')
     const isFriends = await this.friendsService.check(creator.id, recipient.id)
@@ -86,14 +90,17 @@ export class ConversationsService implements IConversationsService {
     // await this.messageRepository.save(newMessage)
     return conversation
   }
+
   async hasAccess({ id, userId }: AccessParams): Promise<boolean> {
     const conversation = await this.findById(id)
     if (!conversation) throw new ConversationNotFoundException()
     return conversation.creator.id === userId || conversation.recipient.id === userId
   }
+
   async save(conversation: Conversation): Promise<Conversation> {
     return this.conversationRepository.save(conversation)
   }
+
   async getMessages({ id, limit }: GetConversationMessagesParams): Promise<Conversation> {
     return this.conversationRepository
       .createQueryBuilder('conversation')
@@ -105,6 +112,7 @@ export class ConversationsService implements IConversationsService {
       .limit(limit)
       .getOne()
   }
+
   async update({ id, lastMessageSent }: UpdateConversationParams) {
     return this.conversationRepository.update(id, { lastMessageSent })
   }

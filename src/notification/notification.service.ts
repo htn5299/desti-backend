@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { NotificationEntity } from '../utils/typeorm/entities/Notification.entity'
+import { NotificationEntity, NotificationRecipientEntity } from '../utils/typeorm'
 import { INotification } from './interface/notification'
 import { NotificationRecipientType, NotificationType } from '../utils/types'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { NotificationRecipientEntity } from '../utils/typeorm/entities/NotificationRecipient.entity'
 
 @Injectable()
 export class NotificationService implements INotification {
@@ -13,13 +12,15 @@ export class NotificationService implements INotification {
     @InjectRepository(NotificationRecipientEntity)
     private readonly notificationRecipientRepository: Repository<NotificationRecipientEntity>
   ) {}
+
   async createNotification(
-    content: Omit<NotificationType, 'id' | 'createdAt' | 'updatedAt'>
+    body: Omit<NotificationType, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<NotificationEntity> {
-    const { actor, entity, service, action } = content
-    const createNotification = await this.notificationRepository.create({ actor, action, service, entity })
+    const { actor, entity, service, action, content } = body
+    const createNotification = await this.notificationRepository.create({ actor, action, service, entity, content })
     return await this.notificationRepository.save(createNotification)
   }
+
   async createNotificationRecipient(
     content: Omit<NotificationRecipientType, 'id' | 'createdAt' | 'updatedAt' | 'readAt'>
   ): Promise<NotificationRecipientEntity> {
@@ -30,16 +31,20 @@ export class NotificationService implements INotification {
     })
     return await this.notificationRecipientRepository.save(createNotificationRecipient)
   }
-  async getAllNotificationByUser(user: { userId: number }): Promise<NotificationRecipientEntity[]> {
-    const { userId } = user
+
+  async getAllNotificationByUser(query: { userId: number; page: number }): Promise<NotificationRecipientEntity[]> {
+    const { userId, page } = query
     return await this.notificationRecipientRepository
       .createQueryBuilder('nr')
       .where('nr.recipient = :userId', { userId })
       .leftJoinAndSelect('nr.notification', 'n')
       .leftJoinAndSelect('n.actor', 'actor')
+      .take(5)
+      .skip(5 * (page - 1))
       .orderBy('nr.createdAt', 'DESC')
       .getMany()
   }
+
   async getNotificationRecipientById(notificationRecipient: {
     notificationRecipientId: number
   }): Promise<NotificationRecipientEntity> {
@@ -52,6 +57,7 @@ export class NotificationService implements INotification {
       .orderBy('nr.createdAt', 'DESC')
       .getOne()
   }
+
   async deleteNotification(notification: { entity: number }): Promise<any> {
     const { entity } = notification
     return await this.notificationRepository

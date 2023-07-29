@@ -22,6 +22,9 @@ export class NotificationEntity {
   @Column()
   entity: number
 
+  @Column({ nullable: true })
+  content: string
+
   @Column({ type: 'enum', enum: Action, default: Action.POST })
   action: Action
 

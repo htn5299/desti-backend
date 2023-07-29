@@ -1,5 +1,5 @@
-import { User } from '../../utils/typeorm/entities/User.entity'
-import { Payload, ValidateUserDetails } from '../../utils/types'
+import { User } from '../../utils/typeorm'
+import { Payload, UserDetails, ValidateUserDetails } from '../../utils/types'
 
 export interface TokenData {
   accessToken: string
@@ -7,6 +7,8 @@ export interface TokenData {
 }
 
 export interface IAuthService {
+  validateGoogleUser(userDetails: UserDetails): Promise<User | null>
+
   validateUser(userDetails: ValidateUserDetails): Promise<User | null>
 
   generateAccessToken(payload: Payload): Promise<string>
