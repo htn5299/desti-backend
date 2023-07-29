@@ -81,14 +81,13 @@ export class ConversationsService implements IConversationsService {
       creator,
       recipient
     })
-    const conversation = await this.conversationRepository.save(newConversation)
     // const newMessage = this.messageRepository.create({
     //   content,
     //   conversation,
     //   author: creator
     // })
     // await this.messageRepository.save(newMessage)
-    return conversation
+    return await this.conversationRepository.save(newConversation)
   }
 
   async hasAccess({ id, userId }: AccessParams): Promise<boolean> {

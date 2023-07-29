@@ -50,7 +50,7 @@
     "dotenv-cli": "^7.2.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "hbs": "^4.2.0",
+    "handlebars": "^4.7.7",
     "moment": "^2.29.4",
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
