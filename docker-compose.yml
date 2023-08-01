@@ -1,5 +1,15 @@
 version: '3.7'
 services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    networks:
+      - default
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis:/data
   desti-database:
     image: postgres:14
     container_name: ${POSTGRES_DB_HOST}
@@ -20,12 +30,16 @@ services:
     image: desti-nestjs:1.0
     depends_on:
       - ${POSTGRES_DB_HOST}
+      - redis
     ports:
       - 8001:${PORT}
     networks:
       - desti-network
 volumes:
   desti-data:
+  redis:
+    driver: local
+
 
 networks:
   desti-network:

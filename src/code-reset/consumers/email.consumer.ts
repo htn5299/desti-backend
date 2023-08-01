@@ -8,15 +8,27 @@ export class EmailConsumer {
 
   @Process('forget')
   async forgetPassword(job: Job<unknown>) {
-    console.log('start send mail reset')
-    const time1 = new Date()
+    // console.log('start send mail reset')
+    // const time1 = new Date()
     await this.mailerService.sendMail({
       to: job.data['email'],
       subject: 'Forget Password',
       template: './resetpassword',
       context: { email: job.data['email'], name: job.data['name'], code: job.data['code'] }
     })
-    const time2 = new Date()
-    console.log(`success in ${time2.getTime() - time1.getTime()} ms`)
+    // const time2 = new Date()
+    // console.log(`success in ${time2.getTime() - time1.getTime()} ms`)
+  }
+
+  @Process('register')
+  async registerAccount(job: Job<unknown>) {
+    // console.log('start send mail reset')
+    // const time1 = new Date()
+    await this.mailerService.sendMail({
+      to: job.data['email'],
+      context: { email: job.data['email'], name: job.data['name'], code: job.data['code'] }
+    })
+    // const time2 = new Date()
+    // console.log(`success in ${time2.getTime() - time1.getTime()} ms`)
   }
 }

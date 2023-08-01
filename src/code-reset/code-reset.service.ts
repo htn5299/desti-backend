@@ -25,12 +25,12 @@ export class CodeResetService implements ICodeReset {
     const now = moment()
     const codeReset = await this.codeResetEntityRepository.findOne({ where: { code: code } })
     if (!codeReset) {
-      throw new MyHttpException('No code', HttpStatus.BAD_REQUEST)
+      throw new MyHttpException('No code', HttpStatus.GONE)
     }
     const timeDifference = now.diff(codeReset.updatedAt)
     if (timeDifference > TEN_MINUTES_IN_MS) {
       await this.deleteCode(codeReset.code)
-      throw new MyHttpException('Code has expired', HttpStatus.BAD_REQUEST)
+      throw new MyHttpException('Code has expired', HttpStatus.GONE)
     }
     return codeReset
   }

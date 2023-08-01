@@ -17,6 +17,7 @@ import { IImageStorageService } from './image.storage'
 @Controller(Routes.IMAGE_STORAGE)
 export class ImageStorageController {
   constructor(@Inject(Services.IMAGE_STORAGE) private readonly imageStorageService: IImageStorageService) {}
+
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async upload(
@@ -25,7 +26,7 @@ export class ImageStorageController {
         .addFileTypeValidator({
           fileType: /(jpg|jpeg|png)$/
         })
-        .addMaxSizeValidator({ maxSize: 5242880 })
+        .addMaxSizeValidator({ maxSize: 10485760 })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
         })
@@ -34,6 +35,7 @@ export class ImageStorageController {
   ) {
     return await this.imageStorageService.upload(file)
   }
+
   @Post('abc')
   @UseInterceptors(FilesInterceptor('files'))
   async uploads(
@@ -42,7 +44,7 @@ export class ImageStorageController {
         .addFileTypeValidator({
           fileType: /(jpg|jpeg|png)$/
         })
-        .addMaxSizeValidator({ maxSize: 5242880 })
+        .addMaxSizeValidator({ maxSize: 10485760 })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
         })
@@ -51,6 +53,7 @@ export class ImageStorageController {
   ) {
     return await this.imageStorageService.uploads(files)
   }
+
   @Delete()
   async delete(@Body('key') key: string) {
     return await this.imageStorageService.delete(key)

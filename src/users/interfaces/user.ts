@@ -1,10 +1,12 @@
 import { User } from '../../utils/typeorm'
-import { CreateUserDetails, FindUserParams, FindUserOptions } from '../../utils/types'
+import { CreateUserDetails, FindUserParams, FindUserOptions, UpdateUserParams } from '../../utils/types'
 
 export interface IUserService {
   create(userDetails: CreateUserDetails): Promise<User>
 
   findOne(findUserParams: FindUserParams, option?: FindUserOptions): Promise<User>
+
+  update(updateUser: UpdateUserParams): Promise<User>
 
   save(user: User): Promise<User>
 

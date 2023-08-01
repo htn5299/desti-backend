@@ -2,7 +2,7 @@ import { Injectable, HttpStatus } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User, Profile } from '../../utils/typeorm'
-import { CreateUserDetails, FindUserOptions, FindUserParams } from '../../utils/types'
+import { CreateUserDetails, FindUserOptions, FindUserParams, UpdateUserParams } from '../../utils/types'
 import { hashPassword } from '../../utils/helpers'
 import { IUserService } from '../interfaces/user'
 import { MyHttpException } from '../../utils/myHttpException'
@@ -83,5 +83,13 @@ export class UsersService implements IUserService {
       throw new MyHttpException('User not found', HttpStatus.NOT_FOUND)
     }
     return user
+  }
+
+  async update(updateUser: UpdateUserParams): Promise<User> {
+    const findUser = await this.findOne({ id: updateUser.id })
+    if (!updateUser.name) {
+      return findUser
+    }
+    return this.userRepository.save({ ...findUser, name: updateUser.name })
   }
 }

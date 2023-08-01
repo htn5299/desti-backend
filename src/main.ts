@@ -20,8 +20,7 @@ async function bootstrap() {
       whitelist: true
     })
   )
-  const server = await app.listen(port || 3000)
-  server.setTimeout(2000)
+  await app.listen(port || 3000)
 }
 
 bootstrap().then(() => {

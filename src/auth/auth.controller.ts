@@ -67,7 +67,9 @@ export class AuthController {
 
   @Post('forget')
   async forgetPassword(@Body() body: ForgetPasswordDto) {
-    return this.codeResetService.generateCode(body.email)
+    //send mail
+    await this.codeResetService.generateCode(body.email)
+    return
   }
 
   @Patch('reset/:id')

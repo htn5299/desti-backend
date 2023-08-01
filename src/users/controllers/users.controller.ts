@@ -19,7 +19,7 @@ import { MyHttpException } from '../../utils/myHttpException'
 import { User } from '../utils/user.decorator'
 import { UpdateProfileDto } from '../dto/UpdateProfile.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { UpdateProfileParams } from '../../utils/types'
+import { UpdateProfileParams, UpdateUserParams } from '../../utils/types'
 import { IProfile } from '../interfaces/profile'
 
 @Controller(Routes.USERS)
@@ -61,6 +61,8 @@ export class UsersController {
     @UploadedFile() file: Express.MulterS3.File
   ) {
     const updateProfileParams: UpdateProfileParams = { id, about: content.about, file }
+    const updateUserParams: UpdateUserParams = { id, name: content.name }
+    await this.userService.update(updateUserParams)
     return await this.profileService.update(updateProfileParams)
   }
 

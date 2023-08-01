@@ -28,6 +28,8 @@ export class ProfileService implements IProfile {
     }
     if (updateProfileParams.about) {
       findProfile.about = updateProfileParams.about
+    } else {
+      findProfile.about = ''
     }
     return await this.profileRepository.save(findProfile)
   }

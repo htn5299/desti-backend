@@ -45,7 +45,7 @@ export class PlacesController {
         .addFileTypeValidator({
           fileType: /(jpg|jpeg|png)$/
         })
-        .addMaxSizeValidator({ maxSize: 5242880 })
+        .addMaxSizeValidator({ maxSize: 10485760 })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
         })
@@ -73,10 +73,12 @@ export class PlacesController {
     }
     return await this.placesService.getByUserId(userId)
   }
+
   @Get('/search')
   async search(@Query('q') q: string) {
     return await this.placesService.search(q)
   }
+
   @Get('top/:id')
   async topPlace(@Param('id', ParseIntPipe) id: number) {
     const topPlaces = await this.reviewsService.topPlaces(id)
@@ -87,6 +89,7 @@ export class PlacesController {
   async findOne(@Param('placeId', ParseIntPipe) id: number) {
     return await this.placesService.findOne({ id })
   }
+
   @Patch(':placeId')
   async update(
     @User('sub') userId: number,
@@ -96,6 +99,7 @@ export class PlacesController {
     const findPlace: FindPlace = { id: placeId, createdId: userId }
     return await this.placesService.update(findPlace, body)
   }
+
   @Get(':placeId/images')
   async getImages(@Param('placeId', ParseIntPipe) placeId: number) {
     const images = await this.placeImgService.getImages(placeId)

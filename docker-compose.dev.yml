@@ -1,5 +1,15 @@
 version: '3.7'
 services:
+  redis-dev:
+    container_name: redis-dev
+    image: redis:7.0.12
+    restart: always
+    networks:
+      - default
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-dev:/data
   desti-database-dev:
     image: postgres:14
     container_name: "database-dev"
@@ -10,6 +20,8 @@ services:
     ports:
       - ${POSTGRES_DB_PORT}:5432
     volumes:
-      - desti-dev-data:/var/lib/postgresql/data
+      - data-dev:/var/lib/postgresql/data
 volumes:
-  desti-dev-data:
+  data-dev:
+  redis-dev:
+    driver: local
